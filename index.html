@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RMIS at UW-Madison</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
+    />
+    <style>
+      .navbar {
+        background-color: #7b1113;
+      }
+      .hero {
+        background-color: #ddd;
+        padding: 50px;
+        text-align: center;
+      }
+      .socials img {
+        max-width: 100%;
+        height: auto;
+      }
+      .section {
+        padding: 40px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar is-spaced">
+      <div class="navbar-brand">
+        <h1 class="navbar-item has-text-white">
+          Risk Management and Insurance Club at UW-Madison
+        </h1>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <a href="#" id="home" class="navbar-item has-text-white">Home</a>
+          <a href="#" id="about" class="navbar-item has-text-white">About</a>
+          <a href="#" id="join" class="navbar-item has-text-white">Join</a>
+          <a href="#" id="events" class="navbar-item has-text-white"
+            >Events and Attendance</a
+          >
+          <a href="#" id="roster" class="navbar-item has-text-white">Roster</a>
+          <a href="#" id="contact" class="navbar-item has-text-white"
+            >Contact</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="homepage" class="section">
+      <div class="container">
+        <h2 class="title is-3">Home Section</h2>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="aboutpage" class="section is-hidden">
+      <div class="container">
+        <h2 class="title is-4">About RMIS</h2>
+        <p>
+          Founded in 1948, the University of Wisconsin-Madison’s Risk Management
+          & Insurance Society has worked for over 70 years to provide
+          opportunities for informed, thoughtful, and motivated students...
+        </p>
+      </div>
+    </section>
+
+    <!-- Join Section -->
+    <section id="joinpage" class="section is-hidden">
+      <div class="container">
+        <h2 class="title is-4">Join RMIS</h2>
+        <p>
+          Interested in joining? Fill out our application form
+          <a href="#">Here</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="eventspage" class="section is-hidden">
+      <div class="container">
+        <h2 class="title is-4">Event Attendance Tracking</h2>
+        <!-- Sign In / Sign Out Buttons -->
+        <div id="sign-in-sign-out" class="mt-4">
+          <button id="signinBtn" class="button is-success" onclick="signIn()">
+            Sign In
+          </button>
+          <button
+            id="signoutBtn"
+            class="button is-danger is-hidden"
+            onclick="signOut()"
+          >
+            Sign Out
+          </button>
+        </div>
+        <div class="search-box">
+          <input
+            type="text"
+            id="EventCode"
+            placeholder="Enter Event Code"
+            class="input"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+      <div class="modal-background" onclick="closeModal()"></div>
+      <div class="modal-content">
+        <div class="box">
+          <h3 class="title is-4">Sign In</h3>
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+              <input
+                type="email"
+                id="email"
+                class="input"
+                placeholder="Enter your email"
+              />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input
+                type="password"
+                id="password"
+                class="input"
+                placeholder="Enter your password"
+              />
+            </div>
+          </div>
+          <div class="field is-grouped is-grouped-right">
+            <div class="control">
+              <button class="button is-primary" onclick="submitSignIn()">
+                Submit
+              </button>
+            </div>
+            <div class="control">
+              <button class="button is-light" onclick="closeModal()">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roster Section -->
+    <section id="rosterpage" class="section is-hidden">
+      <div class="container">
+        <h2 class="title is-4">Member Roster</h2>
+        <div class="member-roster">
+          <div class="member">
+            John Doe<br />Year: Sophomore<br />Major: Finance
+          </div>
+          <div class="member">
+            Jane Doe<br />Year: Junior<br />Major: Economics
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contactpage" class="section is-hidden">
+      <div class="container">
+        <h2 class="title is-4">Contact Us!</h2>
+        <p>Get in contact with us by following us on our socials!</p>
+        <p>LinkedIn | Instagram | Email</p>
+        <div class="socials">
+          <img src="images/Socials.png" alt="Social Media Links" width="300" />
+        </div>
+      </div>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>
