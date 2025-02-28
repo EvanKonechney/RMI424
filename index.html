@@ -29,9 +29,7 @@
   <body>
     <nav class="navbar is-spaced">
       <div class="navbar-brand">
-        <h1 class="navbar-item has-text-white">
-          Risk Management and Insurance Club at UW-Madison
-        </h1>
+        <h1 class="navbar-item has-text-white is-size-2">RMIS at UW-Madison</h1>
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
@@ -51,19 +49,19 @@
 
     <!-- Home Section -->
     <section id="homepage" class="section has-text-centered">
-      <div class="container">
-        <h2 class="title is-3">Welcome to Risk Management Insurance Society</h2>
+      <div class="is-relative">
+        <h2
+          class="title is-2 is-overlay has-text-centered is-flex is-justify-content-center is-align-items-center is-bold"
+          style="z-index: 2"
+        >
+          Welcome to Risk Management <br />Insurance Society
+        </h2>
         <!-- Centered Image -->
-        <figure class="image is-inline-block">
+        <figure class="is-fullwidth is-center">
           <img
-            src="https://media.licdn.com/dms/image/v2/C4E0BAQH6dweBVnAqCQ/company-logo_200_200/company-logo_200_200/0/1631317070222?e=2147483647&amp;v=beta&amp;t=46GpNO111yXA9I-TnqwT4PrwIE-VhyZR-_Vn5GiAYjs"
+            src="https://brand.wisc.edu/content/uploads/2016/12/bascom-fall-1500x500.jpg"
             alt="Risk Management Insurance Club Logo"
-            style="
-              border: 2px solid black;
-              padding: 5px;
-              width: 500px;
-              height: auto;
-            "
+            style="padding: 0px; width: 100%; height: auto; opacity: 50%"
           />
         </figure>
       </div>
@@ -71,7 +69,16 @@
 
     <!-- About Section -->
     <section id="aboutpage" class="section is-hidden">
-      <div class="container">
+      <div class="is-clipped" style="width: 100%; height: 200px">
+        <figure>
+          <img
+            src="https://brand.wisc.edu/content/uploads/2016/12/bascom-fall-1500x500.jpg"
+            alt=""
+            style="opacity: 50%"
+          />
+        </figure>
+      </div>
+      <div class="container mt-4">
         <h2 class="title is-4">About RMIS</h2>
         <p>
           Founded in 1948, the University of Wisconsin-Madison’s Risk Management
@@ -83,13 +90,38 @@
 
     <!-- Join Section -->
     <section id="joinpage" class="section is-hidden">
-      <div class="container">
-        <h2 class="title is-4">Join RMIS</h2>
+      <div class="is-relative">
+        <!-- Centered Image -->
+        <figure class="is-fullwidth is-center">
+          <img
+            src="https://res.cloudinary.com/simpleview/image/upload/v1655846723/clients/madison/wiscokid76_Instagram_2873_ig_17894131859324450_eef0d14a-526a-43b2-b98f-619ecd6bb9f1.jpg"
+            alt="Risk Management Insurance Club Logo"
+            style="padding: 0px; width: 100%; height: auto"
+          />
+        </figure>
+        <div
+          class="box is-overlay overlay-box is-justify-content-center"
+          style="
+            width: 32%;
+            height: 32%;
+            text-align: center;
+            top: 34%;
+            left: 34%;
+          "
+        >
+          <h2 class="title is-2">Join RMIS</h2>
+          <p>
+            Interested in joining? <br />
+            fill out our application form <a href="#">Here</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- <h2 class="title is-2">Join RMIS</h2>
         <p>
           Interested in joining? Fill out our application form
           <a href="#">Here</a>.
-        </p>
-      </div>
+        </p> -->
     </section>
 
     <!-- Events Section -->
@@ -238,6 +270,52 @@
     </section>
 
     <footer class="footer has-background-light">
+      <div class="container"></div>
+        <h2 class="title is-2 has-text-centered">Contact Us!</h2>
+        <p class="has-text-centered">Follow us on all our socials!</p>
+        <!-- Social Media Icons -->
+        <div
+          class="is-flex is-justify-content-center is-align-items-center mt-3"
+        >
+          <!-- LinkedIn -->
+          <a
+            href="https://www.linkedin.com/company/rmis-uw"
+            target="_blank"
+            class="mx-3"
+          >
+            <span class="icon is-large">
+              <i class="fab fa-linkedin fa-2x"></i>
+            </span>
+          </a>
+          <!-- Instagram -->
+          <a
+            href="https://www.instagram.com/rmisuw?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank"
+            class="mx-3"
+          >
+            <span class="icon is-large">
+              <i class="fab fa-instagram fa-2x"></i>
+            </span>
+          </a>
+          <!-- Email -->
+          <a href="mailto:your@email.com" class="mx-3">
+            <span class="icon is-large">
+              <i class="fas fa-envelope fa-2x"></i>
+            </span>
+          </a>
+        </div>
+
+        <!-- Social Media Image -->
+        <div class="socials mt-5 has-text-centered">
+          <figure class="image is-inline-block">
+            <img
+              src="images/Socials.png"
+              alt="Social Media Links"
+              width="300"
+            />
+          </figure>
+        </div>
+      </div>
       <div class="content has-text-centered">
         <p>&copy; RMIS at UW-Madison. All rights reserved.</p>
       </div>

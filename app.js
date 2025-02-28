@@ -50,13 +50,11 @@ r_e("roster").addEventListener("click", () => {
   r_e("contactpage").classList.add("is-hidden");
 });
 
-r_e("contact").addEventListener("click", () => {
-  r_e("homepage").classList.add("is-hidden");
-  r_e("aboutpage").classList.add("is-hidden");
-  r_e("joinpage").classList.add("is-hidden");
-  r_e("eventspage").classList.add("is-hidden");
-  r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.remove("is-hidden");
+r_e("contact").addEventListener("click", function () {
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: "smooth",
+  });
 });
 
 // Function to sign in the user
