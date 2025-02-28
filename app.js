@@ -120,3 +120,18 @@ function submitSignIn() {
     alert("Please fill in both fields.");
   }
 }
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
+  authDomain: "infosys424project.firebaseapp.com",
+  projectId: "infosys424project",
+  storageBucket: "infosys424project.firebasestorage.app",
+  messagingSenderId: "410062568113",
+  appId: "1:410062568113:web:08f3f71987dd3ab6250090",
+  measurementId: "G-RS7X851NXV",
+};
+firebase.initializeApp(firebaseConfig);
+let auth = firebase.auth();
+let db = firebase.firestore();
