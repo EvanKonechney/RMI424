@@ -28,6 +28,14 @@
       .section {
         padding: 40px 20px;
       }
+      .member-box {
+        width: 400px;
+        padding: 15px;
+        border-radius: 10px;
+        background: #f5f5f5;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -129,17 +137,33 @@
           class="box is-overlay overlay-box is-justify-content-center"
           style="
             width: 32%;
-            height: 32%;
+            height: 36%;
             text-align: center;
             top: 34%;
             left: 34%;
           "
         >
-          <h2 class="title is-2">Join RMIS</h2>
+          <h2 class="title is-3">Get Involved!</h2>
           <p>
-            Interested in joining? <br />
-            fill out our application form <a href="#">Here</a>.
+            Click "Sign Up" to be an active member, track attendance points, and
+            be shown on the roster. Click "Subscribe" to receive our weekly
+            newsletter and learn about events!
           </p>
+          <br />
+          <button
+            id="joinsignup"
+            class="button"
+            style="background-color: #7b1113; color: white"
+          >
+            Sign Up
+          </button>
+          <button
+            id="newsletter"
+            class="button"
+            style="background-color: #7b1113; color: white"
+          >
+            Newsletter
+          </button>
         </div>
       </div>
 
@@ -236,12 +260,64 @@
     <section id="rosterpage" class="section is-hidden">
       <div class="container">
         <h2 class="title is-4">Member Roster</h2>
-        <div class="member-roster">
-          <div class="member">
-            John Doe<br />Year: Sophomore<br />Major: Finance
+        <div
+          class="columns is-flex is-flex-wrap-wrap is-justify-content-center"
+        >
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>John Doe</strong></p>
+              <p>Year: Sophomore</p>
+              <p>Major: Finance</p>
+            </div>
           </div>
-          <div class="member">
-            Jane Doe<br />Year: Junior<br />Major: Economics
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>Jane Doe</strong></p>
+              <p>Year: Junior</p>
+              <p>Major: Economics</p>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>Mike Smith</strong></p>
+              <p>Year: Senior</p>
+              <p>Major: Computer Science</p>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>Emily Johnson</strong></p>
+              <p>Year: Freshman</p>
+              <p>Major: Biology</p>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>Sarah Brown</strong></p>
+              <p>Year: Senior</p>
+              <p>Major: Marketing</p>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>Tom White</strong></p>
+              <p>Year: Sophomore</p>
+              <p>Major: Physics</p>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>Anna Black</strong></p>
+              <p>Year: Junior</p>
+              <p>Major: Chemistry</p>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="box member-box">
+              <p><strong>Chris Green</strong></p>
+              <p>Year: Freshman</p>
+              <p>Major: Political Science</p>
+            </div>
           </div>
         </div>
       </div>
