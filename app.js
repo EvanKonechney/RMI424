@@ -121,6 +121,22 @@ function submitSignIn() {
   }
 }
 
+//database stuff~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+db.collection("events")
+  .doc("Sample Event")
+  .set({
+    eventID: "1",
+    name: "Sample Event",
+    building: "Grainger Hall",
+    room: "2120",
+    time: "5:45pm",
+    summary: "Speaker A is coming to talk about Risk Topics",
+    attendees: ["1", "2", "3", "4"],
+  })
+  .then(() => {
+    console.log("Restaurant added with embedded reviews!");
+  });
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
