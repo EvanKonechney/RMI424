@@ -148,7 +148,6 @@ db.collection("Users")
     events_attended: ["Event1", "Event 2"],
   });
 
-// Add an event
 db.collection("Events")
   .doc("event1")
   .set({
