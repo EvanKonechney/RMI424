@@ -235,15 +235,24 @@
     <!-- Roster Section -->
     <section id="rosterpage" class="section is-hidden">
       <div class="container">
-        <h2 class="title is-4">Member Roster</h2>
-        <div class="member-roster">
-          <div class="member">
-            John Doe<br />Year: Sophomore<br />Major: Finance
+        <h2 class="title is-4 has-text-centered">Member Roster</h2>
+        <div class="field has-addons is-justify-content-center mb-5">
+          <div class="control">
+            <input
+              id="rosterSearch"
+              class="input"
+              type="text"
+              placeholder="Search by name..."
+            />
           </div>
-          <div class="member">
-            Jane Doe<br />Year: Junior<br />Major: Economics
+          <div class="control">
+            <button id="rosterSearchBtn" class="button is-info">Search</button>
+          </div>
+          <div class="control">
+            <button id="rosterResetBtn" class="button is-light">Reset</button>
           </div>
         </div>
+        <div class="member-roster columns is-multiline"></div>
       </div>
     </section>
 
@@ -348,5 +357,29 @@
 
     <script src="app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <!-- <script>
+      // TODO
+      // Copy **only** your firebaseConfig from Google Firebae and add it below
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
+        authDomain: "infosys424project.firebaseapp.com",
+        projectId: "infosys424project",
+        storageBucket: "infosys424project.firebasestorage.app",
+        messagingSenderId: "410062568113",
+        appId: "1:410062568113:web:08f3f71987dd3ab6250090",
+        measurementId: "G-RS7X851NXV",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      // define authentication variable
+      let auth = firebase.auth();
+      let db = firebase.firestore();
+
+      // define a storage reference
+      let ref = firebase.storage().ref();
+    </script> -->
   </body>
 </html>

@@ -41,13 +41,47 @@ r_e("events").addEventListener("click", () => {
   r_e("contactpage").classList.add("is-hidden");
 });
 
-r_e("roster").addEventListener("click", () => {
+// Search function
+let membersData = []; // to store fetched user data
+
+r_e("roster").addEventListener("click", async () => {
   r_e("homepage").classList.add("is-hidden");
   r_e("aboutpage").classList.add("is-hidden");
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.remove("is-hidden");
   r_e("contactpage").classList.add("is-hidden");
+
+  // Reference to the container div where member info will be inserted
+  const rosterContainer = document.querySelector(".member-roster");
+  rosterContainer.innerHTML = ""; // Clear existing content
+
+  try {
+    const snapshot = await db.collection("Users").get();
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      membersData.push(data);
+
+      // Create a new div for each user
+      const memberDiv = document.createElement("div");
+      memberDiv.classList.add("column", "is-one-third");
+
+      memberDiv.innerHTML = `
+        <div class="card">
+          <div class="card-content">
+            <p class="title is-5">${data.first_name} ${data.last_name}</p>
+            <p><strong>Year:</strong> ${data.Standing}</p>
+            <p><strong>Status:</strong> ${data.membership_status}</p>
+          </div>
+        </div>
+      `;
+
+      rosterContainer.appendChild(memberDiv);
+    });
+  } catch (error) {
+    console.error("Error loading roster:", error);
+    rosterContainer.innerHTML = `<p>Failed to load roster data.</p>`;
+  }
 });
 
 r_e("contact").addEventListener("click", function () {
@@ -135,18 +169,18 @@ let auth = firebase.auth();
 let db = firebase.firestore();
 
 // Add a user
-db.collection("Users")
-  .doc("user1")
-  .set({
-    first_name: "John",
-    last_name: "Doe",
-    email: "john.doe@email.com",
-    phone: "123-456-7890",
-    join_date: "2024-04-01",
-    Standing: "jr",
-    membership_status: "active",
-    events_attended: ["Event1", "Event 2"],
-  });
+// db.collection("Users")
+//   .doc("user1")
+//   .set({
+//     first_name: "John",
+//     last_name: "Doe",
+//     email: "john.doe@email.com",
+//     phone: "123-456-7890",
+//     join_date: "2024-04-01",
+//     Standing: "jr",
+//     membership_status: "active",
+//     events_attended: ["Event1", "Event 2"],
+//   });
 
 db.collection("Events")
   .doc("event1")
@@ -165,4 +199,58 @@ db.collection("Events")
 db.collection("Attendance").doc("att1").set({
   user_id: "user1",
   event_id: "event1",
+});
+
+db.collection("Users")
+  .doc("user2")
+  .set({
+    first_name: "Sally",
+    last_name: "Smith",
+    email: "sally.smith@email.com",
+    phone: "231-456-7890",
+    join_date: "2024-04-10",
+    Standing: "jr",
+    membership_status: "active",
+    events_attended: ["Event1", "Event 2"],
+  });
+
+// Search function
+function renderFilteredRoster(searchTerm) {
+  const rosterContainer = document.querySelector(".member-roster");
+  rosterContainer.innerHTML = "";
+
+  const filtered = membersData.filter((member) =>
+    `${member.first_name} ${member.last_name}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  filtered.forEach((member) => {
+    const memberDiv = document.createElement("div");
+    memberDiv.classList.add("column", "is-one-third");
+
+    memberDiv.innerHTML = `
+        <div class="card">
+          <div class="card-content">
+            <p class="title is-5">${member.first_name} ${member.last_name}</p>
+            <p><strong>Year:</strong> ${member.Standing}</p>
+            <p><strong>Status:</strong> ${member.membership_status}</p>
+          </div>
+        </div>
+      `;
+
+    rosterContainer.appendChild(memberDiv);
+  });
+}
+
+// Search Button event listener
+document.getElementById("rosterSearchBtn").addEventListener("click", () => {
+  const searchValue = document.getElementById("rosterSearch").value;
+  renderFilteredRoster(searchValue);
+});
+
+// reset button event listener
+document.getElementById("rosterResetBtn").addEventListener("click", () => {
+  document.getElementById("rosterSearch").value = ""; // Clear input
+  renderFilteredRoster(""); // Show full roster
 });
