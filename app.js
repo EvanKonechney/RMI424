@@ -254,3 +254,21 @@ document.getElementById("rosterResetBtn").addEventListener("click", () => {
   document.getElementById("rosterSearch").value = ""; // Clear input
   renderFilteredRoster(""); // Show full roster
 });
+
+function handleSubmit(event) {
+  event.preventDefault();
+  document.getElementById("join-form").classList.add("is-hidden");
+  document.getElementById("thank-you").classList.remove("is-hidden");
+}
+
+function signIn() {
+  document.getElementById("signinBtn").classList.add("is-hidden");
+  document.getElementById("signoutBtn").classList.remove("is-hidden");
+  document.getElementById("event-inputs").classList.remove("is-hidden");
+}
+
+function signOut() {
+  document.getElementById("signinBtn").classList.remove("is-hidden");
+  document.getElementById("signoutBtn").classList.add("is-hidden");
+  document.getElementById("event-inputs").classList.add("is-hidden");
+}

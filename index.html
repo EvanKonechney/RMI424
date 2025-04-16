@@ -73,7 +73,7 @@
 
     <!-- About Section -->
     <section id="aboutpage" class="section is-hidden">
-      <div class="is-clipped" style="width: 100%; height: 200px">
+      <div class="is-clipped" style="width: 100%; height: 400px">
         <figure>
           <img
             src="https://brand.wisc.edu/content/uploads/2016/12/bascom-fall-1500x500.jpg"
@@ -115,45 +115,112 @@
     </section>
 
     <!-- Join Section -->
-    <section id="joinpage" class="section is-hidden">
-      <div class="is-relative">
-        <!-- Centered Image -->
-        <figure class="is-fullwidth is-center">
-          <img
-            src="https://res.cloudinary.com/simpleview/image/upload/v1655846723/clients/madison/wiscokid76_Instagram_2873_ig_17894131859324450_eef0d14a-526a-43b2-b98f-619ecd6bb9f1.jpg"
-            alt="Risk Management Insurance Club Logo"
-            style="padding: 0px; width: 100%; height: auto"
-          />
-        </figure>
+    <section
+      id="joinpage"
+      class="section is-hidden"
+      style="
+        background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1655846723/clients/madison/wiscokid76_Instagram_2873_ig_17894131859324450_eef0d14a-526a-43b2-b98f-619ecd6bb9f1.jpg');
+        background-size: cover;
+        background-position: center;
+      "
+    >
+      <div class="container has-text-centered">
         <div
-          class="box is-overlay overlay-box is-justify-content-center"
-          style="
-            width: 32%;
-            height: 32%;
-            text-align: center;
-            top: 34%;
-            left: 34%;
-          "
+          class="box has-background-white p-5 mx-auto"
+          style="max-width: 600px"
         >
-          <h2 class="title is-2">Join RMIS</h2>
-          <p>
-            Interested in joining? <br />
-            fill out our application form <a href="#">Here</a>.
-          </p>
+          <!-- Join Form -->
+          <form id="join-form" onsubmit="handleSubmit(event)">
+            <h1 class="title">Join RMIS</h1>
+            <p class="subtitle">Become a member today!</p>
+
+            <div class="field">
+              <label class="label">Full Name</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="e.g. Bucky Badger"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Email</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="email"
+                  placeholder="e.g. bucky@wisc.edu"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Password</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="password"
+                  placeholder="Enter a secure password"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Year</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select required>
+                    <option value="">Select year</option>
+                    <option>Freshman</option>
+                    <option>Sophomore</option>
+                    <option>Junior</option>
+                    <option>Senior</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Major</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="e.g. Risk Management"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field is-grouped is-justify-content-center mt-4">
+              <div class="control">
+                <button class="button is-primary is-medium" type="submit">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Thank You Message -->
+          <div id="thank-you" class="is-hidden has-text-centered mt-5">
+            <h2 class="title is-3 has-text-success">
+              Thanks for joining RMIS!
+            </h2>
+          </div>
         </div>
       </div>
-
-      <!-- <h2 class="title is-2">Join RMIS</h2>
-        <p>
-          Interested in joining? Fill out our application form
-          <a href="#">Here</a>.
-        </p> -->
     </section>
 
     <!-- Events Section -->
     <section id="eventspage" class="section is-hidden">
       <div class="container has-text-centered">
         <h2 class="title is-4">Event Attendance Tracking</h2>
+
         <!-- Sign In / Sign Out Buttons -->
         <div id="sign-in-sign-out" class="mt-4">
           <button id="signinBtn" class="button is-success" onclick="signIn()">
@@ -167,23 +234,27 @@
             Sign Out
           </button>
         </div>
-        <div class="search-box">
-          <input
-            type="text"
-            id="EventName"
-            placeholder="Enter Event Name"
-            class="input"
-            style="width: 50%; margin-bottom: 1rem; margin-top: 2rem"
-          />
-        </div>
-        <div class="search-box">
-          <input
-            type="text"
-            id="EventCode"
-            placeholder="Enter Event Code"
-            class="input"
-            style="width: 50%"
-          />
+
+        <!-- Event Input Fields (Hidden until signed in) -->
+        <div id="event-inputs" class="is-hidden">
+          <div class="search-box">
+            <input
+              type="text"
+              id="EventName"
+              placeholder="Enter Event Name"
+              class="input"
+              style="width: 50%; margin-bottom: 1rem; margin-top: 2rem"
+            />
+          </div>
+          <div class="search-box">
+            <input
+              type="text"
+              id="EventCode"
+              placeholder="Enter Event Code"
+              class="input"
+              style="width: 50%"
+            />
+          </div>
         </div>
       </div>
     </section>
