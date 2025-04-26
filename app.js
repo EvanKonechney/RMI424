@@ -67,9 +67,9 @@ r_e("roster").addEventListener("click", async () => {
       memberDiv.innerHTML = `
         <div class="card">
           <div class="card-content">
-            <p class="title is-5">${data.first_name} ${data.last_name}</p>
-            <p><strong>Year:</strong> ${data.Standing}</p>
-            <p><strong>Status:</strong> ${data.membership_status}</p>
+            <p class="title is-5">${data.name}</p>
+            <p><strong>Year:</strong> ${data.year}</p>
+            <p><strong>Status:</strong> ${data.major}</p>
           </div>
         </div>
       `;
