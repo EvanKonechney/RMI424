@@ -11,7 +11,7 @@ r_e("home").addEventListener("click", () => {
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 });
 
 r_e("about").addEventListener("click", () => {
@@ -20,7 +20,7 @@ r_e("about").addEventListener("click", () => {
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 });
 
 r_e("join").addEventListener("click", () => {
@@ -29,7 +29,7 @@ r_e("join").addEventListener("click", () => {
   r_e("joinpage").classList.remove("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 });
 
 r_e("events").addEventListener("click", () => {
@@ -38,7 +38,17 @@ r_e("events").addEventListener("click", () => {
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.remove("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
+});
+
+// Add event listener for the Calendar link in the navbar
+r_e("calendar").addEventListener("click", () => {
+  r_e("homepage").classList.add("is-hidden");
+  r_e("aboutpage").classList.add("is-hidden");
+  r_e("joinpage").classList.add("is-hidden");
+  r_e("eventspage").classList.add("is-hidden");
+  r_e("rosterpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.remove("is-hidden");
 });
 
 // Search function
@@ -50,7 +60,7 @@ r_e("roster").addEventListener("click", async () => {
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.remove("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 
   const rosterContainer = document.querySelector(".member-roster");
   rosterContainer.innerHTML = "";
@@ -83,12 +93,12 @@ r_e("roster").addEventListener("click", async () => {
 });
 
 //---------------------------------------------Contact
-r_e("contact").addEventListener("click", function () {
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: "smooth",
-  });
-});
+// r_e("contact").addEventListener("click", function () {
+//   window.scrollTo({
+//     top: document.body.scrollHeight,
+//     behavior: "smooth",
+//   });
+// });
 
 //---------------------------------------------Sign In
 function signIn() {
