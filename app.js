@@ -177,37 +177,37 @@ function submitSignIn() {
 //     events_attended: ["Event1", "Event 2"],
 //   });
 
-db.collection("Events")
-  .doc("event1")
-  .set({
-    event_name: "Speaker 1",
-    date: "2024-04-15",
-    location: {
-      building: "ABC Hall",
-      room: "101",
-    },
-    description: "An event to network with professionals.",
-    attendees: ["user1", "user2"],
-  });
+// db.collection("Events")
+//   .doc("event1")
+//   .set({
+//     event_name: "Speaker 1",
+//     date: "2024-04-15",
+//     location: {
+//       building: "ABC Hall",
+//       room: "101",
+//     },
+//     description: "An event to network with professionals.",
+//     attendees: ["user1", "user2"],
+//   });
 
 // Add attendance record
-db.collection("Attendance").doc("att1").set({
-  user_id: "user1",
-  event_id: "event1",
-});
+// db.collection("Attendance").doc("att1").set({
+//   user_id: "user1",
+//   event_id: "event1",
+// });
 
-db.collection("Users")
-  .doc("user2")
-  .set({
-    first_name: "Sally",
-    last_name: "Smith",
-    email: "sally.smith@email.com",
-    phone: "231-456-7890",
-    join_date: "2024-04-10",
-    Standing: "jr",
-    membership_status: "active",
-    events_attended: ["Event1", "Event 2"],
-  });
+// db.collection("Users")
+//   .doc("user2")
+//   .set({
+//     first_name: "Sally",
+//     last_name: "Smith",
+//     email: "sally.smith@email.com",
+//     phone: "231-456-7890",
+//     join_date: "2024-04-10",
+//     Standing: "jr",
+//     membership_status: "active",
+//     events_attended: ["Event1", "Event 2"],
+//   });
 
 // Search function
 function renderFilteredRoster(searchTerm) {
@@ -250,10 +250,64 @@ document.getElementById("rosterResetBtn").addEventListener("click", () => {
   renderFilteredRoster(""); // Show full roster
 });
 
+// function handleSubmit(event) {
+//   event.preventDefault();
+//   document.getElementById("join-form").classList.add("is-hidden");
+//   document.getElementById("thank-you").classList.remove("is-hidden");
+// }
+// Handle form submission for joining
 function handleSubmit(event) {
-  event.preventDefault();
-  document.getElementById("join-form").classList.add("is-hidden");
-  document.getElementById("thank-you").classList.remove("is-hidden");
+  event.preventDefault(); // Prevent the default form submission
+
+  // Get values from form
+  const fullName = document.querySelector('input[type="text"]').value;
+  const email = document.querySelector('input[type="email"]').value;
+  const password = document.querySelector('input[type="password"]').value;
+  const year = document.querySelector("select").value;
+  const major = document.querySelector(
+    'input[placeholder="e.g. Risk Management"]'
+  ).value;
+
+  // Validate input values
+  if (!fullName || !email || !password || !year || !major) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  // Create a new user with Firebase Authentication
+  auth
+    .createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // User registered successfully
+      const user = userCredential.user;
+
+      // Add additional user data to Firestore
+      db.collection("Users")
+        .doc(user.uid)
+        .set({
+          name: fullName,
+          email: email,
+          year: year,
+          major: major,
+          uid: user.uid,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+          // Successfully added to Firestore, show thank you message
+          document.getElementById("join-form").reset(); // Reset the form
+          document.getElementById("thank-you").classList.remove("is-hidden");
+          setTimeout(() => {
+            document.getElementById("thank-you").classList.add("is-hidden");
+          }, 5000); // Hide the "Thank You" message after 5 seconds
+        })
+        .catch((error) => {
+          console.error("Error adding user to Firestore: ", error);
+        });
+    })
+    .catch((error) => {
+      console.error("Error creating user: ", error);
+      alert("Error creating user: " + error.message);
+    });
 }
 
 // Your web app's Firebase configuration

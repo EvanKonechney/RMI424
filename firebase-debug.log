@@ -1,0 +1,63 @@
+[debug] [2025-04-26T03:15:06.198Z] ----------------------------------------------------------------------
+[debug] [2025-04-26T03:15:06.205Z] Command:       /usr/local/bin/firebase /Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase init
+[debug] [2025-04-26T03:15:06.205Z] CLI Version:   14.0.1
+[debug] [2025-04-26T03:15:06.205Z] Platform:      darwin
+[debug] [2025-04-26T03:15:06.206Z] Node Version:  v20.18.2
+[debug] [2025-04-26T03:15:06.207Z] Time:          Fri Apr 25 2025 22:15:06 GMT-0500 (Central Daylight Time)
+[debug] [2025-04-26T03:15:06.207Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-04-26T03:15:06.522Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-04-26T03:15:06.525Z] > authorizing via signed-in user (gmdai@wisc.edu)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/gracedai/Documents/IS424/2/RMI424
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-04-26T03:15:12.713Z] Checked if tokens are valid: false, expires at: 1744320302822
+[debug] [2025-04-26T03:15:12.715Z] Checked if tokens are valid: false, expires at: 1744320302822
+[debug] [2025-04-26T03:15:12.715Z] > refreshing access token with scopes: []
+[debug] [2025-04-26T03:15:12.719Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-04-26T03:15:12.720Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-04-26T03:15:13.011Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2025-04-26T03:15:13.011Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-04-26T03:15:13.012Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2025-04-26T03:15:13.015Z] FirebaseError: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+    at invalidCredentialError (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/auth.js:147:12)
+    at refreshTokens (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/auth.js:539:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async getAccessToken (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/apiv2.js:42:18)
+    at async Client.addAuthHeader (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/apiv2.js:169:21)
+    at async Client.request (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/apiv2.js:120:34)
+    at async getProjectPage (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/management/projects.js:265:17)
+    at async getFirebaseProjectPage (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/management/projects.js:282:23)
+    at async selectProjectInteractively (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/management/projects.js:122:41)
+    at async doSetup (/Users/gracedai/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/init/features/project.js:89:27)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
