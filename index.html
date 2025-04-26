@@ -223,9 +223,14 @@
 
         <!-- Sign In / Sign Out Buttons -->
         <div id="sign-in-sign-out" class="mt-4">
-          <button id="signinBtn" class="button is-success" onclick="signIn()">
+          <button
+            id="signinBtn"
+            class="button is-success"
+            onclick="openSignInModal()"
+          >
             Sign In
           </button>
+
           <button
             id="signoutBtn"
             class="button is-danger is-hidden"
@@ -255,6 +260,9 @@
               style="width: 50%"
             />
           </div>
+          <button class="button is-link mt-4" onclick="submitAttendance()">
+            Submit Attendance
+          </button>
         </div>
       </div>
     </section>

@@ -95,20 +95,17 @@ r_e("contact").addEventListener("click", function () {
 function signIn() {
   document.getElementById("signinBtn").classList.add("is-hidden"); // Hide the Sign In button
   document.getElementById("signoutBtn").classList.remove("is-hidden"); // Show the Sign Out button
+  document.getElementById("event-inputs").classList.remove("is-hidden");
 
   // Update the user status to "signed in"
   localStorage.setItem("signedIn", "true");
-  alert("You are now signed in.");
 }
 
-// Function to sign out the user
-function signOut() {
-  document.getElementById("signinBtn").classList.remove("is-hidden"); // Show the Sign In button
-  document.getElementById("signoutBtn").classList.add("is-hidden"); // Hide the Sign Out button
-
-  // Update the user status to "signed out"
-  localStorage.setItem("signedIn", "false");
-  alert("You are now signed out.");
+function openSignInModal() {
+  r_e("signinModal").classList.add("is-active");
+}
+function closeModal() {
+  document.getElementById("signinModal").classList.remove("is-active");
 }
 
 // Function to check if the user is signed in
@@ -127,30 +124,43 @@ window.onload = function () {
   }
 };
 
-// Show the modal
-function signIn() {
-  document.getElementById("signinModal").classList.add("is-active");
-}
+function submitAttendance() {
+  const eventName = document.getElementById("EventName").value.trim();
+  const eventCode = document.getElementById("EventCode").value.trim();
+  const user = auth.currentUser;
 
-// Close the modal
-function closeModal() {
-  document.getElementById("signinModal").classList.remove("is-active");
-}
-
-// Handle form submission
-function submitSignIn() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  if (email && password) {
-    // Mock sign-in logic
-    console.log(`Signed in with Email: ${email}, Password: ${password}`);
-    closeModal();
-    document.getElementById("signinBtn").classList.add("is-hidden");
-    document.getElementById("signoutBtn").classList.remove("is-hidden");
-  } else {
-    alert("Please fill in both fields.");
+  if (!user) {
+    alert("Please sign in first.");
+    return;
   }
+
+  if (!eventName || !eventCode) {
+    alert("Please enter both Event Name and Event Code.");
+    return;
+  }
+
+  const userRef = db.collection("Users").doc(user.uid);
+
+  userRef
+    .set(
+      {
+        events_attended: firebase.firestore.FieldValue.arrayUnion({
+          event_name: eventName,
+          event_code: eventCode,
+          timestamp: firebase.firestore.Timestamp.now(),
+        }),
+      },
+      { merge: true }
+    )
+    .then(() => {
+      alert("Attendance recorded!");
+      document.getElementById("EventName").value = "";
+      document.getElementById("EventCode").value = "";
+    })
+    .catch((error) => {
+      console.error("Error saving attendance:", error);
+      alert("Something went wrong. Try again.");
+    });
 }
 
 // Your web app's Firebase configuration
@@ -261,14 +271,48 @@ function handleSubmit(event) {
   document.getElementById("thank-you").classList.remove("is-hidden");
 }
 
-function signIn() {
-  document.getElementById("signinBtn").classList.add("is-hidden");
-  document.getElementById("signoutBtn").classList.remove("is-hidden");
-  document.getElementById("event-inputs").classList.remove("is-hidden");
+function signOut() {
+  auth
+    .signOut()
+    .then(() => {
+      r_e("signinBtn").classList.remove("is-hidden");
+      r_e("signoutBtn").classList.add("is-hidden");
+      r_e("event-inputs").classList.add("is-hidden");
+      localStorage.setItem("signedIn", "false");
+      alert("Signed out successfully!");
+    })
+    .catch((error) => {
+      alert("Sign out failed: " + error.message);
+    });
 }
 
-function signOut() {
-  document.getElementById("signinBtn").classList.remove("is-hidden");
-  document.getElementById("signoutBtn").classList.add("is-hidden");
-  document.getElementById("event-inputs").classList.add("is-hidden");
+function submitSignIn() {
+  const email = r_e("email").value.trim();
+  const password = r_e("password").value;
+
+  auth
+    .signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      // Check if the user exists in the Firestore "Users" collection
+      return db.collection("Users").doc(user.uid).get();
+    })
+    .then((docSnapshot) => {
+      if (!docSnapshot.exists) {
+        alert("Signed in, but no matching user record found in the database.");
+        return auth.signOut();
+      } else {
+        // Proceed with signed-in UI
+        r_e("signinBtn").classList.add("is-hidden");
+        r_e("signoutBtn").classList.remove("is-hidden");
+        r_e("event-inputs").classList.remove("is-hidden");
+        localStorage.setItem("signedIn", "true");
+        closeModal();
+        alert("Signed in successfully!");
+      }
+    })
+    .catch((error) => {
+      alert("Sign in failed: " + error.message);
+    });
 }
