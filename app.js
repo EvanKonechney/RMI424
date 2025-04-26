@@ -42,7 +42,7 @@ r_e("events").addEventListener("click", () => {
 });
 
 // Search function
-let membersData = []; // to store fetched user data
+let membersData = [];
 
 r_e("roster").addEventListener("click", async () => {
   r_e("homepage").classList.add("is-hidden");
@@ -82,6 +82,7 @@ r_e("roster").addEventListener("click", async () => {
   }
 });
 
+//---------------------------------------------Contact
 r_e("contact").addEventListener("click", function () {
   window.scrollTo({
     top: document.body.scrollHeight,
@@ -89,6 +90,7 @@ r_e("contact").addEventListener("click", function () {
   });
 });
 
+//---------------------------------------------Sign In
 function signIn() {
   document.getElementById("signinBtn").classList.add("is-hidden");
   document.getElementById("signoutBtn").classList.remove("is-hidden");
@@ -159,53 +161,7 @@ function submitSignIn() {
     });
 }
 
-// Add a user
-// db.collection("Users")
-//   .doc("user1")
-//   .set({
-//     first_name: "John",
-//     last_name: "Doe",
-//     email: "john.doe@email.com",
-//     phone: "123-456-7890",
-//     join_date: "2024-04-01",
-//     Standing: "jr",
-//     membership_status: "active",
-//     events_attended: ["Event1", "Event 2"],
-//   });
-
-// db.collection("Events")
-//   .doc("event1")
-//   .set({
-//     event_name: "Speaker 1",
-//     date: "2024-04-15",
-//     location: {
-//       building: "ABC Hall",
-//       room: "101",
-//     },
-//     description: "An event to network with professionals.",
-//     attendees: ["user1", "user2"],
-//   });
-
-// Add attendance record
-// db.collection("Attendance").doc("att1").set({
-//   user_id: "user1",
-//   event_id: "event1",
-// });
-
-// db.collection("Users")
-//   .doc("user2")
-//   .set({
-//     first_name: "Sally",
-//     last_name: "Smith",
-//     email: "sally.smith@email.com",
-//     phone: "231-456-7890",
-//     join_date: "2024-04-10",
-//     Standing: "jr",
-//     membership_status: "active",
-//     events_attended: ["Event1", "Event 2"],
-//   });
-
-// Search function
+// -------------------------------------------------------Search function
 function renderFilteredRoster(searchTerm) {
   const rosterContainer = document.querySelector(".member-roster");
   rosterContainer.innerHTML = "";
@@ -246,7 +202,7 @@ document.getElementById("rosterResetBtn").addEventListener("click", () => {
   renderFilteredRoster(""); // Show full roster
 });
 
-// Handle form submission for joining
+// --------------------------------------------------------- joining
 function handleSubmit(event) {
   event.preventDefault(); // Prevent the default form submission
 
@@ -307,7 +263,6 @@ function submitAttendance() {
 }
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
   authDomain: "infosys424project.firebaseapp.com",
@@ -320,3 +275,49 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 let auth = firebase.auth();
 let db = firebase.firestore();
+
+// Add a user
+// db.collection("Users")
+//   .doc("user1")
+//   .set({
+//     first_name: "John",
+//     last_name: "Doe",
+//     email: "john.doe@email.com",
+//     phone: "123-456-7890",
+//     join_date: "2024-04-01",
+//     Standing: "jr",
+//     membership_status: "active",
+//     events_attended: ["Event1", "Event 2"],
+//   });
+
+// db.collection("Events")
+//   .doc("event1")
+//   .set({
+//     event_name: "Speaker 1",
+//     date: "2024-04-15",
+//     location: {
+//       building: "ABC Hall",
+//       room: "101",
+//     },
+//     description: "An event to network with professionals.",
+//     attendees: ["user1", "user2"],
+//   });
+
+// Add attendance record
+// db.collection("Attendance").doc("att1").set({
+//   user_id: "user1",
+//   event_id: "event1",
+// });
+
+// db.collection("Users")
+//   .doc("user2")
+//   .set({
+//     first_name: "Sally",
+//     last_name: "Smith",
+//     email: "sally.smith@email.com",
+//     phone: "231-456-7890",
+//     join_date: "2024-04-10",
+//     Standing: "jr",
+//     membership_status: "active",
+//     events_attended: ["Event1", "Event 2"],
+//   });
