@@ -125,7 +125,6 @@ function signOut() {
       r_e("signoutBtn").classList.add("is-hidden");
       r_e("event-inputs").classList.add("is-hidden");
       localStorage.setItem("signedIn", "false");
-      alert("Signed out successfully!");
     })
     .catch((error) => {
       alert("Sign out failed: " + error.message);
@@ -133,33 +132,30 @@ function signOut() {
 }
 
 function submitSignIn() {
-  const email = r_e("email").value.trim();
-  const password = r_e("password").value;
+  // Get the email and password entered by the user
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  auth
+  // Firebase sign-in logic
+  firebase
+    .auth()
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
 
-      // Check if the user exists in the Firestore "Users" collection
-      return db.collection("Users").doc(user.uid).get();
-    })
-    .then((docSnapshot) => {
-      if (!docSnapshot.exists) {
-        alert("Signed in, but no matching user record found in the database.");
-        return auth.signOut();
-      } else {
-        // Proceed with signed-in UI
-        r_e("signinBtn").classList.add("is-hidden");
-        r_e("signoutBtn").classList.remove("is-hidden");
-        r_e("event-inputs").classList.remove("is-hidden");
-        localStorage.setItem("signedIn", "true");
-        closeModal();
-        alert("Signed in successfully!");
-      }
+      // Hide the sign-in modal
+      closeModal();
+
+      // Show the event inputs form (attendance form)
+      document.getElementById("event-inputs").classList.remove("is-hidden");
+
+      // Optionally show a message to the user that they are signed in
+      document.getElementById("signinBtn").classList.add("is-hidden"); // Hide Sign In button
+      document.getElementById("signoutBtn").classList.remove("is-hidden"); // Show Sign Out button
     })
     .catch((error) => {
-      alert("Sign in failed: " + error.message);
+      alert("Error signing in!");
+      // Optionally show an error message to the user
     });
 }
 
@@ -250,11 +246,6 @@ document.getElementById("rosterResetBtn").addEventListener("click", () => {
   renderFilteredRoster(""); // Show full roster
 });
 
-// function handleSubmit(event) {
-//   event.preventDefault();
-//   document.getElementById("join-form").classList.add("is-hidden");
-//   document.getElementById("thank-you").classList.remove("is-hidden");
-// }
 // Handle form submission for joining
 function handleSubmit(event) {
   event.preventDefault(); // Prevent the default form submission
@@ -308,6 +299,11 @@ function handleSubmit(event) {
       console.error("Error creating user: ", error);
       alert("Error creating user: " + error.message);
     });
+}
+
+// Function to submit attendance
+function submitAttendance() {
+  alert("yay");
 }
 
 // Your web app's Firebase configuration
