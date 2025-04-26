@@ -340,6 +340,8 @@ function submitAttendance() {
     .catch((error) => {
       alert("Error fetching events: " + error.message);
     });
+  document.getElementById("EventCode").value = "";
+  document.getElementById("EventName").value = "";
 }
 
 // Your web app's Firebase configuration
