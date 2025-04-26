@@ -52,9 +52,8 @@ r_e("roster").addEventListener("click", async () => {
   r_e("rosterpage").classList.remove("is-hidden");
   r_e("contactpage").classList.add("is-hidden");
 
-  // Reference to the container div where member info will be inserted
   const rosterContainer = document.querySelector(".member-roster");
-  rosterContainer.innerHTML = ""; // Clear existing content
+  rosterContainer.innerHTML = "";
 
   try {
     const snapshot = await db.collection("Users").get();
@@ -62,7 +61,6 @@ r_e("roster").addEventListener("click", async () => {
       const data = doc.data();
       membersData.push(data);
 
-      // Create a new div for each user
       const memberDiv = document.createElement("div");
       memberDiv.classList.add("column", "is-one-third");
 
@@ -91,13 +89,11 @@ r_e("contact").addEventListener("click", function () {
   });
 });
 
-// Function to sign in the user
 function signIn() {
-  document.getElementById("signinBtn").classList.add("is-hidden"); // Hide the Sign In button
-  document.getElementById("signoutBtn").classList.remove("is-hidden"); // Show the Sign Out button
+  document.getElementById("signinBtn").classList.add("is-hidden");
+  document.getElementById("signoutBtn").classList.remove("is-hidden");
   document.getElementById("event-inputs").classList.remove("is-hidden");
 
-  // Update the user status to "signed in"
   localStorage.setItem("signedIn", "true");
 }
 
@@ -108,12 +104,10 @@ function closeModal() {
   document.getElementById("signinModal").classList.remove("is-active");
 }
 
-// Function to check if the user is signed in
 function isUserSignedIn() {
-  return localStorage.getItem("signedIn") === "true"; // Check if the user is signed in from localStorage
+  return localStorage.getItem("signedIn") === "true";
 }
 
-// Initialize the sign-in state on page load
 window.onload = function () {
   if (isUserSignedIn()) {
     document.getElementById("signinBtn").classList.add("is-hidden"); // Hide the Sign In button
@@ -123,60 +117,51 @@ window.onload = function () {
     document.getElementById("signoutBtn").classList.add("is-hidden"); // Hide the Sign Out button
   }
 };
-
-function submitAttendance() {
-  const eventName = document.getElementById("EventName").value.trim();
-  const eventCode = document.getElementById("EventCode").value.trim();
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert("Please sign in first.");
-    return;
-  }
-
-  if (!eventName || !eventCode) {
-    alert("Please enter both Event Name and Event Code.");
-    return;
-  }
-
-  const userRef = db.collection("Users").doc(user.uid);
-
-  userRef
-    .set(
-      {
-        events_attended: firebase.firestore.FieldValue.arrayUnion({
-          event_name: eventName,
-          event_code: eventCode,
-          timestamp: firebase.firestore.Timestamp.now(),
-        }),
-      },
-      { merge: true }
-    )
+function signOut() {
+  auth
+    .signOut()
     .then(() => {
-      alert("Attendance recorded!");
-      document.getElementById("EventName").value = "";
-      document.getElementById("EventCode").value = "";
+      r_e("signinBtn").classList.remove("is-hidden");
+      r_e("signoutBtn").classList.add("is-hidden");
+      r_e("event-inputs").classList.add("is-hidden");
+      localStorage.setItem("signedIn", "false");
+      alert("Signed out successfully!");
     })
     .catch((error) => {
-      console.error("Error saving attendance:", error);
-      alert("Something went wrong. Try again.");
+      alert("Sign out failed: " + error.message);
     });
 }
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
-  authDomain: "infosys424project.firebaseapp.com",
-  projectId: "infosys424project",
-  storageBucket: "infosys424project.firebasestorage.app",
-  messagingSenderId: "410062568113",
-  appId: "1:410062568113:web:08f3f71987dd3ab6250090",
-  measurementId: "G-RS7X851NXV",
-};
-firebase.initializeApp(firebaseConfig);
-let auth = firebase.auth();
-let db = firebase.firestore();
+function submitSignIn() {
+  const email = r_e("email").value.trim();
+  const password = r_e("password").value;
+
+  auth
+    .signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      // Check if the user exists in the Firestore "Users" collection
+      return db.collection("Users").doc(user.uid).get();
+    })
+    .then((docSnapshot) => {
+      if (!docSnapshot.exists) {
+        alert("Signed in, but no matching user record found in the database.");
+        return auth.signOut();
+      } else {
+        // Proceed with signed-in UI
+        r_e("signinBtn").classList.add("is-hidden");
+        r_e("signoutBtn").classList.remove("is-hidden");
+        r_e("event-inputs").classList.remove("is-hidden");
+        localStorage.setItem("signedIn", "true");
+        closeModal();
+        alert("Signed in successfully!");
+      }
+    })
+    .catch((error) => {
+      alert("Sign in failed: " + error.message);
+    });
+}
 
 // Add a user
 // db.collection("Users")
@@ -271,48 +256,17 @@ function handleSubmit(event) {
   document.getElementById("thank-you").classList.remove("is-hidden");
 }
 
-function signOut() {
-  auth
-    .signOut()
-    .then(() => {
-      r_e("signinBtn").classList.remove("is-hidden");
-      r_e("signoutBtn").classList.add("is-hidden");
-      r_e("event-inputs").classList.add("is-hidden");
-      localStorage.setItem("signedIn", "false");
-      alert("Signed out successfully!");
-    })
-    .catch((error) => {
-      alert("Sign out failed: " + error.message);
-    });
-}
-
-function submitSignIn() {
-  const email = r_e("email").value.trim();
-  const password = r_e("password").value;
-
-  auth
-    .signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-
-      // Check if the user exists in the Firestore "Users" collection
-      return db.collection("Users").doc(user.uid).get();
-    })
-    .then((docSnapshot) => {
-      if (!docSnapshot.exists) {
-        alert("Signed in, but no matching user record found in the database.");
-        return auth.signOut();
-      } else {
-        // Proceed with signed-in UI
-        r_e("signinBtn").classList.add("is-hidden");
-        r_e("signoutBtn").classList.remove("is-hidden");
-        r_e("event-inputs").classList.remove("is-hidden");
-        localStorage.setItem("signedIn", "true");
-        closeModal();
-        alert("Signed in successfully!");
-      }
-    })
-    .catch((error) => {
-      alert("Sign in failed: " + error.message);
-    });
-}
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
+  authDomain: "infosys424project.firebaseapp.com",
+  projectId: "infosys424project",
+  storageBucket: "infosys424project.firebasestorage.app",
+  messagingSenderId: "410062568113",
+  appId: "1:410062568113:web:08f3f71987dd3ab6250090",
+  measurementId: "G-RS7X851NXV",
+};
+firebase.initializeApp(firebaseConfig);
+let auth = firebase.auth();
+let db = firebase.firestore();
