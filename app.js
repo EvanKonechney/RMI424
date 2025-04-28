@@ -220,8 +220,9 @@ function renderFilteredRoster(searchTerm) {
         <div class="card">
           <div class="card-content">
             <p class="title is-5">${member.first_name} ${member.last_name}</p>
-            <p><strong>Year:</strong> ${member.Standing}</p>
-            <p><strong>Status:</strong> ${member.membership_status}</p>
+            <p><strong>Year:</strong> ${member.year}</p>
+            <p><strong>Major:</strong> ${member.major}</p>
+            <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
           </div>
         </div>
       `;
