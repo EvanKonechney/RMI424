@@ -144,14 +144,28 @@
             <h1 class="title">Join RMIS</h1>
             <p class="subtitle">Become a member today!</p>
 
-            <!-- Full Name -->
+            <!-- First Name -->
             <div class="field">
-              <label class="label">Full Name</label>
+              <label class="label">First Name</label>
               <div class="control">
                 <input
                   class="input"
                   type="text"
-                  placeholder="e.g. Bucky Badger"
+                  id="firstName"
+                  placeholder="e.g. Bucky"
+                  required
+                />
+              </div>
+            </div>
+            <!-- Last Name -->
+            <div class="field">
+              <label class="label">Last Name</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  id="lastName"
+                  placeholder="e.g. Badger"
                   required
                 />
               </div>
@@ -165,6 +179,35 @@
                   class="input"
                   type="email"
                   placeholder="e.g. bucky@wisc.edu"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Phone Number</label>
+              <div class="control is-flex" style="gap: 8px">
+                <!-- Country Code Input -->
+                <input
+                  class="input"
+                  type="text"
+                  id="countryCode"
+                  placeholder="+1"
+                  maxlength="5"
+                  pattern="^\+\d{1,4}$"
+                  style="flex: 1"
+                  required
+                />
+
+                <!-- Phone Number Input -->
+                <input
+                  class="input"
+                  type="tel"
+                  id="phoneNumber"
+                  placeholder="1234567890"
+                  maxlength="10"
+                  pattern="\d{10}"
+                  style="flex: 4"
                   required
                 />
               </div>
@@ -352,9 +395,14 @@
     </section>
     <!-- Calendar Page -->
     <div id="calendarpage" class="is-hidden">
-      <h1>Calendar Page</h1>
-      <p>This is where the calendar will go.</p>
+      <section class="section">
+        <div class="container">
+          <h1 class="title">Event Calendar</h1>
+          <div id="event-list"></div>
+        </div>
+      </section>
     </div>
+
     <!-- Contact Section -->
     <section id="contactpage" class="section is-hidden has-text-centered">
       <div class="container">
