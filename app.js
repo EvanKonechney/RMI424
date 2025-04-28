@@ -148,7 +148,6 @@ db.collection("Users")
     events_attended: ["Event1", "Event 2"],
   });
 
-// Add an event
 db.collection("Events")
   .doc("event1")
   .set({
@@ -159,7 +158,6 @@ db.collection("Events")
       room: "101",
     },
     description: "An event to network with professionals.",
-    attendees: ["user1", "user2"],
   });
 
 // Add attendance record
