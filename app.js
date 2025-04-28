@@ -51,6 +51,17 @@ r_e("calendar").addEventListener("click", () => {
   r_e("calendarpage").classList.remove("is-hidden");
 });
 
+r_e("calendar").addEventListener("click", () => {
+  r_e("homepage").classList.add("is-hidden");
+  r_e("aboutpage").classList.add("is-hidden");
+  r_e("joinpage").classList.add("is-hidden");
+  r_e("eventspage").classList.add("is-hidden");
+  r_e("rosterpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.remove("is-hidden");
+
+  loadCalendarEvents(); // Make sure this line is called
+});
+
 // Search function
 let membersData = [];
 
@@ -209,16 +220,28 @@ function handleSubmit(event) {
   event.preventDefault(); // Prevent the default form submission
 
   // Get values from form
-  const fullName = document.querySelector('input[type="text"]').value;
+  const firstName = document.getElementById("firstName").value;
+  const lastName = document.getElementById("lastName").value;
+  const countryCode = document.getElementById("countryCode").value;
+  const phoneNumber = document.getElementById("phoneNumber").value;
   const email = document.querySelector('input[type="email"]').value;
   const password = document.querySelector('input[type="password"]').value;
   const year = document.querySelector("select").value;
   const major = document.querySelector(
     'input[placeholder="e.g. Risk Management"]'
   ).value;
+  const fullPhoneNumber = `${countryCode}${phoneNumber}`;
 
   // Validate input values
-  if (!fullName || !email || !password || !year || !major) {
+  if (
+    !firstName ||
+    !lastName ||
+    !fullPhoneNumber ||
+    !email ||
+    !password ||
+    !year ||
+    !major
+  ) {
     alert("Please fill in all fields.");
     return;
   }
@@ -234,8 +257,10 @@ function handleSubmit(event) {
       db.collection("Users")
         .doc(user.uid)
         .set({
-          name: fullName,
+          first_name: firstName,
+          last_name: lastName,
           email: email,
+          phone_number: fullPhoneNumber,
           year: year,
           major: major,
           uid: user.uid,
@@ -344,6 +369,41 @@ function submitAttendance() {
   document.getElementById("EventName").value = "";
 }
 
+async function loadCalendarEvents() {
+  const eventList = document.getElementById("event-list");
+  eventList.innerHTML = ""; // Clear previous content
+
+  try {
+    const snapshot = await db.collection("Events").get();
+
+    let events = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      events.push({ id: doc.id, ...data });
+    });
+
+    // Sort by date descending
+    events.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    events.forEach((event) => {
+      const eventDiv = document.createElement("div");
+      eventDiv.classList.add("box");
+
+      eventDiv.innerHTML = `
+        <h2 class="title is-4">${event.event_name}</h2>
+        <p><strong>Date:</strong> ${event.date}</p>
+        <p><strong>Location:</strong> ${event.location.building} Room ${event.location.room}</p>
+        <p>${event.description}</p>
+      `;
+
+      eventList.appendChild(eventDiv);
+    });
+  } catch (error) {
+    console.error("Error loading calendar events:", error);
+    eventList.innerHTML = "<p>Failed to load events.</p>";
+  }
+}
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
@@ -359,19 +419,20 @@ let auth = firebase.auth();
 let db = firebase.firestore();
 
 //Add a user
-db.collection("Users")
-  .doc("user1")
-  .set({
-    first_name: "John",
-    last_name: "Doe",
-    email: "john.doe@email.com",
-    phone: "123-456-7890",
-    join_date: "2024-04-01",
-    Standing: "jr",
-    membership_status: "active",
-    events_attended: ["Event1", "Event 2"],
-  });
+//db.collection("Users")
+//   .doc("user1")
+//   .set({
+//     first_name: "John",
+//     last_name: "Doe",
+//     email: "john.doe@email.com",
+//     phone: "123-456-7890",
+//     join_date: "2024-04-01",
+//     Standing: "jr",
+//     membership_status: "active",
+//     events_attended: ["Event1", "Event 2"],
+//   });
 
+<<<<<<< HEAD
 db.collection("Events")
   .doc("event1")
   .set({
@@ -388,3 +449,18 @@ db.collection("Events")
     attendees: ["user1", "user2"],
 >>>>>>> abfffcb044455e0dc7776cce95417ab543bbbd2f
   });
+=======
+// db.collection("Events")
+//   .doc("event1")
+//   .set({
+//     event_name: "Speaker 1",
+//     date: "2024-04-15",
+//     location: {
+//       building: "ABC Hall",
+//       room: "101",
+//     },
+//     description: "An event to network with professionals.",
+//     code: CODE1,
+//     attendees: ["user1", "user2"],
+//   });
+>>>>>>> 5045d4e848e8c337b5a90eecbee1b1f8e3db5bbb
