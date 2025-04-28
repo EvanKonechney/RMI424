@@ -51,13 +51,40 @@
             href="#"
             id="leadershipSignInButton"
             class="navbar-item has-text-black has-background-grey-lighter"
+            onclick="openLeadershipModal()"
           >
             Leadership Sign In
+          </a>
+          <a
+            href="#"
+            id="leadershipSignOutButton"
+            class="navbar-item has-text-black has-background-grey-lighter is-hidden"
+            onclick="leadershipSignOut()"
+          >
+            Leadership Sign Out
           </a>
         </div>
       </div>
     </nav>
-
+    <div class="modal" id="leadershipSigninModal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <label>Email:</label>
+          <input type="email" id="leadershipEmail" class="input" />
+          <label>Password:</label>
+          <input type="password" id="leadershipPassword" class="input" />
+          <button class="button is-primary" onclick="submitLeadershipSignIn()">
+            Sign In
+          </button>
+        </div>
+      </div>
+      <button
+        class="modal-close is-large"
+        aria-label="close"
+        onclick="closeLeadershipModal()"
+      ></button>
+    </div>
     <!-- Home Section -->
     <section id="homepage" class="section has-text-centered">
       <div class="is-relative">

@@ -125,11 +125,6 @@ r_e("roster").addEventListener("click", async () => {
   }
 });
 
-// Utility function (assuming you have it elsewhere)
-function r_e(id) {
-  return document.getElementById(id);
-}
-
 //---------------------------------------------Sign In
 function signIn() {
   document.getElementById("signinBtn").classList.add("is-hidden");
@@ -322,10 +317,8 @@ function submitAttendance() {
 
   // Reference to the Events collection in Firestore
   const eventsRef = db.collection("Events");
-
-  // Query the Events collection to find an event with the matching code
   eventsRef
-    .where("code", "==", enteredCode) // Assuming 'code' is the field you're matching
+    .where("code", "==", enteredCode)
     .get()
     .then((querySnapshot) => {
       if (querySnapshot.empty) {
@@ -473,3 +466,65 @@ let db = firebase.firestore();
 //     code: CODE1,
 //     attendees: ["user1", "user2"],
 //   });
+
+//
+function openLeadershipModal() {
+  r_e("leadershipSigninModal").classList.add("is-active");
+}
+
+function closeLeadershipModal() {
+  r_e("leadershipSigninModal").classList.remove("is-active");
+}
+
+function isLeadershipSignedIn() {
+  return localStorage.getItem("leadershipSignedIn") === "true";
+}
+
+// Leadership sign-in submission
+function submitLeadershipSignIn() {
+  const email = r_e("leadershipEmail").value;
+  const password = r_e("leadershipPassword").value;
+
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user; // Defined inside this block
+
+      db.collection("Users")
+        .doc(user.uid)
+        .get()
+        .then((doc) => {
+          if (doc.exists && doc.data().admin === 1) {
+            localStorage.setItem("leadershipSignedIn", "true");
+            closeLeadershipModal();
+            leadershipSignInButton.classList.add("is-hidden");
+            leadershipSignOutButton.classList.remove("is-hidden");
+
+            alert("Leadership sign-in successful!");
+          } else {
+            firebase.auth().signOut(); // Not an admin
+            alert("You are not authorized.");
+          }
+        })
+        .catch((err) => {
+          alert("Failed to check admin status: " + err.message);
+        });
+    })
+    .catch((err) => {
+      alert("Leadership sign-in failed: " + err.message);
+    });
+}
+
+// Leadership sign-out
+function leadershipSignOut() {
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      localStorage.setItem("leadershipSignedIn", "false");
+      alert("Signed out from leadership.");
+      leadershipSignInButton.classList.remove("is-hidden");
+      leadershipSignOutButton.classList.add("is-hidden");
+    });
+}
