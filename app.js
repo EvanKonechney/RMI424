@@ -359,28 +359,29 @@ let auth = firebase.auth();
 let db = firebase.firestore();
 
 //Add a user
-// db.collection("Users")
-//   .doc("user1")
-//   .set({
-//     first_name: "John",
-//     last_name: "Doe",
-//     email: "john.doe@email.com",
-//     phone: "123-456-7890",
-//     join_date: "2024-04-01",
-//     Standing: "jr",
-//     membership_status: "active",
-//     events_attended: ["Event1", "Event 2"],
-//   });
+db.collection("Users")
+  .doc("user1")
+  .set({
+    first_name: "John",
+    last_name: "Doe",
+    email: "john.doe@email.com",
+    phone: "123-456-7890",
+    join_date: "2024-04-01",
+    Standing: "jr",
+    membership_status: "active",
+    events_attended: ["Event1", "Event 2"],
+  });
 
-// db.collection("Events")
-//   .doc("event1")
-//   .set({
-//     event_name: "Speaker 1",
-//     date: "2024-04-15",
-//     location: {
-//       building: "ABC Hall",
-//       room: "101",
-//     },
-//     description: "An event to network with professionals.",
-//     attendees: ["user1", "user2"],
-//   });
+db.collection("Events")
+  .doc("event1")
+  .set({
+    event_name: "Speaker 1",
+    date: "2024-04-15",
+    location: {
+      building: "ABC Hall",
+      room: "101",
+    },
+    description: "An event to network with professionals.",
+    code: CODE1,
+    attendees: ["user1", "user2"],
+  });
