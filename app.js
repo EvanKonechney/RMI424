@@ -209,16 +209,28 @@ function handleSubmit(event) {
   event.preventDefault(); // Prevent the default form submission
 
   // Get values from form
-  const fullName = document.querySelector('input[type="text"]').value;
+  const firstName = document.getElementById("firstName").value;
+  const lastName = document.getElementById("lastName").value;
+  const countryCode = document.getElementById("countryCode").value;
+  const phoneNumber = document.getElementById("phoneNumber").value;
   const email = document.querySelector('input[type="email"]').value;
   const password = document.querySelector('input[type="password"]').value;
   const year = document.querySelector("select").value;
   const major = document.querySelector(
     'input[placeholder="e.g. Risk Management"]'
   ).value;
+  const fullPhoneNumber = `${countryCode}${phoneNumber}`;
 
   // Validate input values
-  if (!fullName || !email || !password || !year || !major) {
+  if (
+    !firstName ||
+    !lastName ||
+    !fullPhoneNumber ||
+    !email ||
+    !password ||
+    !year ||
+    !major
+  ) {
     alert("Please fill in all fields.");
     return;
   }
@@ -234,8 +246,10 @@ function handleSubmit(event) {
       db.collection("Users")
         .doc(user.uid)
         .set({
-          name: fullName,
+          first_name: firstName,
+          last_name: lastName,
           email: email,
+          phone_number: fullPhoneNumber,
           year: year,
           major: major,
           uid: user.uid,
