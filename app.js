@@ -62,46 +62,73 @@ r_e("calendar").addEventListener("click", () => {
   loadCalendarEvents(); // Make sure this line is called
 });
 
-// Search function
 let membersData = [];
 
 r_e("roster").addEventListener("click", async () => {
+  // Hide all other pages, show roster page
   r_e("homepage").classList.add("is-hidden");
   r_e("aboutpage").classList.add("is-hidden");
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
-  r_e("rosterpage").classList.remove("is-hidden");
   r_e("calendarpage").classList.add("is-hidden");
+  r_e("rosterpage").classList.remove("is-hidden");
 
+  // Clear out any previous roster display
   const rosterContainer = document.querySelector(".member-roster");
   rosterContainer.innerHTML = "";
 
   try {
+    // Fetch all users from Firestore
     const snapshot = await db.collection("Users").get();
+    membersData = []; // Clear previous data
+
     snapshot.forEach((doc) => {
       const data = doc.data();
-      membersData.push(data);
+      membersData.push({ id: doc.id, ...data }); // Save ID too for deletion
 
       const memberDiv = document.createElement("div");
       memberDiv.classList.add("column", "is-one-third");
 
+      // Create the card content with a delete button
       memberDiv.innerHTML = `
         <div class="card">
           <div class="card-content">
             <p class="title is-5">${data.first_name} ${data.last_name}</p>
             <p><strong>Year:</strong> ${data.year}</p>
-            <p><strong>Status:</strong> ${data.major}</p>
+            <p><strong>Major:</strong> ${data.major}</p>
+            <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
           </div>
         </div>
       `;
 
+      // Add the card to the page
       rosterContainer.appendChild(memberDiv);
+
+      // Add event listener for delete button
+      const deleteButton = memberDiv.querySelector(".delete-member-button");
+      deleteButton.addEventListener("click", async () => {
+        if (confirm(`Are you sure you want to delete ${data.name}?`)) {
+          try {
+            await db.collection("Users").doc(doc.id).delete();
+            memberDiv.remove(); // Remove the card from the DOM
+            console.log(`${data.name} deleted successfully.`);
+          } catch (error) {
+            console.error("Error deleting user:", error);
+            alert("Failed to delete user. Please try again.");
+          }
+        }
+      });
     });
   } catch (error) {
     console.error("Error loading roster:", error);
     rosterContainer.innerHTML = `<p>Failed to load roster data.</p>`;
   }
 });
+
+// Utility function (assuming you have it elsewhere)
+function r_e(id) {
+  return document.getElementById(id);
+}
 
 //---------------------------------------------Sign In
 function signIn() {
