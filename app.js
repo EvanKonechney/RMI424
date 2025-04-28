@@ -96,7 +96,7 @@ r_e("roster").addEventListener("click", async () => {
           <div class="card-content">
             <p class="title is-5">${data.name}</p>
             <p><strong>Year:</strong> ${data.year}</p>
-            <p><strong>Status:</strong> ${data.major}</p>
+            <p><strong>Major:</strong> ${data.major}</p>
             <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
           </div>
         </div>
