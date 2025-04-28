@@ -44,8 +44,8 @@
             >Events and Attendance</a
           >
           <a href="#" id="roster" class="navbar-item has-text-white">Roster</a>
-          <a href="#" id="contact" class="navbar-item has-text-white"
-            >Contact</a
+          <a href="#" id="calendar" class="navbar-item has-text-white"
+            >Calendar</a
           >
         </div>
       </div>
@@ -73,15 +73,25 @@
 
     <!-- About Section -->
     <section id="aboutpage" class="section is-hidden">
-      <div class="is-clipped" style="width: 100%; height: 200px">
-        <figure>
+      <div
+        class="is-clipped"
+        style="
+          width: 100%;
+          height: 400px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <figure style="margin: 0">
           <img
             src="https://brand.wisc.edu/content/uploads/2016/12/bascom-fall-1500x500.jpg"
             alt=""
-            style="opacity: 50%"
+            style="opacity: 50%; max-width: 100%; max-height: 100%"
           />
         </figure>
       </div>
+
       <div class="container mt-4">
         <h2 class="title is-4">About RMIS</h2>
         <p>
@@ -115,50 +125,128 @@
     </section>
 
     <!-- Join Section -->
-    <section id="joinpage" class="section is-hidden">
-      <div class="is-relative">
-        <!-- Centered Image -->
-        <figure class="is-fullwidth is-center">
-          <img
-            src="https://res.cloudinary.com/simpleview/image/upload/v1655846723/clients/madison/wiscokid76_Instagram_2873_ig_17894131859324450_eef0d14a-526a-43b2-b98f-619ecd6bb9f1.jpg"
-            alt="Risk Management Insurance Club Logo"
-            style="padding: 0px; width: 100%; height: auto"
-          />
-        </figure>
+    <section
+      id="joinpage"
+      class="section is-hidden"
+      style="
+        background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1655846723/clients/madison/wiscokid76_Instagram_2873_ig_17894131859324450_eef0d14a-526a-43b2-b98f-619ecd6bb9f1.jpg');
+        background-size: cover;
+        background-position: center;
+      "
+    >
+      <div class="container has-text-centered">
         <div
-          class="box is-overlay overlay-box is-justify-content-center"
-          style="
-            width: 32%;
-            height: 32%;
-            text-align: center;
-            top: 34%;
-            left: 34%;
-          "
+          class="box has-background-white p-5 mx-auto"
+          style="max-width: 600px"
         >
-          <h2 class="title is-2">Join RMIS</h2>
-          <p>
-            Interested in joining? <br />
-            fill out our application form <a href="#">Here</a>.
-          </p>
+          <!-- Join Form -->
+          <form id="join-form" onsubmit="handleSubmit(event)">
+            <h1 class="title">Join RMIS</h1>
+            <p class="subtitle">Become a member today!</p>
+
+            <!-- Full Name -->
+            <div class="field">
+              <label class="label">Full Name</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="e.g. Bucky Badger"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="field">
+              <label class="label">Email</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="email"
+                  placeholder="e.g. bucky@wisc.edu"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="field">
+              <label class="label">Password</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="password"
+                  placeholder="Enter a secure password"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Year -->
+            <div class="field">
+              <label class="label">Year</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select required>
+                    <option value="">Select year</option>
+                    <option>Freshman</option>
+                    <option>Sophomore</option>
+                    <option>Junior</option>
+                    <option>Senior</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Major -->
+            <div class="field">
+              <label class="label">Major</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="e.g. Risk Management"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="field is-grouped is-justify-content-center mt-4">
+              <div class="control">
+                <button class="button is-primary is-medium" type="submit">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Thank You Message -->
+          <div id="thank-you" class="is-hidden has-text-centered mt-5">
+            <h2 class="title is-3 has-text-success">
+              Thanks for joining RMIS!
+            </h2>
+          </div>
         </div>
       </div>
-
-      <!-- <h2 class="title is-2">Join RMIS</h2>
-        <p>
-          Interested in joining? Fill out our application form
-          <a href="#">Here</a>.
-        </p> -->
     </section>
 
     <!-- Events Section -->
     <section id="eventspage" class="section is-hidden">
       <div class="container has-text-centered">
         <h2 class="title is-4">Event Attendance Tracking</h2>
+
         <!-- Sign In / Sign Out Buttons -->
         <div id="sign-in-sign-out" class="mt-4">
-          <button id="signinBtn" class="button is-success" onclick="signIn()">
+          <button
+            id="signinBtn"
+            class="button is-success"
+            onclick="openSignInModal()"
+          >
             Sign In
           </button>
+
           <button
             id="signoutBtn"
             class="button is-danger is-hidden"
@@ -167,23 +255,30 @@
             Sign Out
           </button>
         </div>
-        <div class="search-box">
-          <input
-            type="text"
-            id="EventName"
-            placeholder="Enter Event Name"
-            class="input"
-            style="width: 50%; margin-bottom: 1rem; margin-top: 2rem"
-          />
-        </div>
-        <div class="search-box">
-          <input
-            type="text"
-            id="EventCode"
-            placeholder="Enter Event Code"
-            class="input"
-            style="width: 50%"
-          />
+
+        <!-- Event Input Fields (Hidden until signed in) -->
+        <div id="event-inputs" class="is-hidden">
+          <div class="search-box">
+            <input
+              type="text"
+              id="EventName"
+              placeholder="Enter Event Name"
+              class="input"
+              style="width: 50%; margin-bottom: 1rem; margin-top: 2rem"
+            />
+          </div>
+          <div class="search-box">
+            <input
+              type="text"
+              id="EventCode"
+              placeholder="Enter Event Code"
+              class="input"
+              style="width: 50%"
+            />
+          </div>
+          <button class="button is-link mt-4" onclick="submitAttendance()">
+            Submit Attendance
+          </button>
         </div>
       </div>
     </section>
@@ -235,18 +330,31 @@
     <!-- Roster Section -->
     <section id="rosterpage" class="section is-hidden">
       <div class="container">
-        <h2 class="title is-4">Member Roster</h2>
-        <div class="member-roster">
-          <div class="member">
-            John Doe<br />Year: Sophomore<br />Major: Finance
+        <h2 class="title is-4 has-text-centered">Member Roster</h2>
+        <div class="field has-addons is-justify-content-center mb-5">
+          <div class="control">
+            <input
+              id="rosterSearch"
+              class="input"
+              type="text"
+              placeholder="Search by name..."
+            />
           </div>
-          <div class="member">
-            Jane Doe<br />Year: Junior<br />Major: Economics
+          <div class="control">
+            <button id="rosterSearchBtn" class="button is-info">Search</button>
+          </div>
+          <div class="control">
+            <button id="rosterResetBtn" class="button is-light">Reset</button>
           </div>
         </div>
+        <div class="member-roster columns is-multiline"></div>
       </div>
     </section>
-
+    <!-- Calendar Page -->
+    <div id="calendarpage" class="is-hidden">
+      <h1>Calendar Page</h1>
+      <p>This is where the calendar will go.</p>
+    </div>
     <!-- Contact Section -->
     <section id="contactpage" class="section is-hidden has-text-centered">
       <div class="container">
@@ -348,5 +456,29 @@
 
     <script src="app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <!-- <script>
+      // TODO
+      // Copy **only** your firebaseConfig from Google Firebae and add it below
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
+        authDomain: "infosys424project.firebaseapp.com",
+        projectId: "infosys424project",
+        storageBucket: "infosys424project.firebasestorage.app",
+        messagingSenderId: "410062568113",
+        appId: "1:410062568113:web:08f3f71987dd3ab6250090",
+        measurementId: "G-RS7X851NXV",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      // define authentication variable
+      let auth = firebase.auth();
+      let db = firebase.firestore();
+
+      // define a storage reference
+      let ref = firebase.storage().ref();
+    </script> -->
   </body>
 </html>

@@ -11,7 +11,7 @@ r_e("home").addEventListener("click", () => {
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 });
 
 r_e("about").addEventListener("click", () => {
@@ -20,7 +20,7 @@ r_e("about").addEventListener("click", () => {
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 });
 
 r_e("join").addEventListener("click", () => {
@@ -29,7 +29,7 @@ r_e("join").addEventListener("click", () => {
   r_e("joinpage").classList.remove("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 });
 
 r_e("events").addEventListener("click", () => {
@@ -38,51 +38,80 @@ r_e("events").addEventListener("click", () => {
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.remove("is-hidden");
   r_e("rosterpage").classList.add("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
 });
 
-r_e("roster").addEventListener("click", () => {
+// Add event listener for the Calendar link in the navbar
+r_e("calendar").addEventListener("click", () => {
+  r_e("homepage").classList.add("is-hidden");
+  r_e("aboutpage").classList.add("is-hidden");
+  r_e("joinpage").classList.add("is-hidden");
+  r_e("eventspage").classList.add("is-hidden");
+  r_e("rosterpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.remove("is-hidden");
+});
+
+// Search function
+let membersData = [];
+
+r_e("roster").addEventListener("click", async () => {
   r_e("homepage").classList.add("is-hidden");
   r_e("aboutpage").classList.add("is-hidden");
   r_e("joinpage").classList.add("is-hidden");
   r_e("eventspage").classList.add("is-hidden");
   r_e("rosterpage").classList.remove("is-hidden");
-  r_e("contactpage").classList.add("is-hidden");
+  r_e("calendarpage").classList.add("is-hidden");
+
+  const rosterContainer = document.querySelector(".member-roster");
+  rosterContainer.innerHTML = "";
+
+  try {
+    const snapshot = await db.collection("Users").get();
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      membersData.push(data);
+
+      const memberDiv = document.createElement("div");
+      memberDiv.classList.add("column", "is-one-third");
+
+      memberDiv.innerHTML = `
+        <div class="card">
+          <div class="card-content">
+            <p class="title is-5">${data.name}</p>
+            <p><strong>Year:</strong> ${data.year}</p>
+            <p><strong>Status:</strong> ${data.major}</p>
+          </div>
+        </div>
+      `;
+
+      rosterContainer.appendChild(memberDiv);
+    });
+  } catch (error) {
+    console.error("Error loading roster:", error);
+    rosterContainer.innerHTML = `<p>Failed to load roster data.</p>`;
+  }
 });
 
-r_e("contact").addEventListener("click", function () {
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: "smooth",
-  });
-});
-
-// Function to sign in the user
+//---------------------------------------------Sign In
 function signIn() {
-  document.getElementById("signinBtn").classList.add("is-hidden"); // Hide the Sign In button
-  document.getElementById("signoutBtn").classList.remove("is-hidden"); // Show the Sign Out button
+  document.getElementById("signinBtn").classList.add("is-hidden");
+  document.getElementById("signoutBtn").classList.remove("is-hidden");
+  document.getElementById("event-inputs").classList.remove("is-hidden");
 
-  // Update the user status to "signed in"
   localStorage.setItem("signedIn", "true");
-  alert("You are now signed in.");
 }
 
-// Function to sign out the user
-function signOut() {
-  document.getElementById("signinBtn").classList.remove("is-hidden"); // Show the Sign In button
-  document.getElementById("signoutBtn").classList.add("is-hidden"); // Hide the Sign Out button
-
-  // Update the user status to "signed out"
-  localStorage.setItem("signedIn", "false");
-  alert("You are now signed out.");
+function openSignInModal() {
+  r_e("signinModal").classList.add("is-active");
+}
+function closeModal() {
+  document.getElementById("signinModal").classList.remove("is-active");
 }
 
-// Function to check if the user is signed in
 function isUserSignedIn() {
-  return localStorage.getItem("signedIn") === "true"; // Check if the user is signed in from localStorage
+  return localStorage.getItem("signedIn") === "true";
 }
 
-// Initialize the sign-in state on page load
 window.onload = function () {
   if (isUserSignedIn()) {
     document.getElementById("signinBtn").classList.add("is-hidden"); // Hide the Sign In button
@@ -92,35 +121,230 @@ window.onload = function () {
     document.getElementById("signoutBtn").classList.add("is-hidden"); // Hide the Sign Out button
   }
 };
-
-// Show the modal
-function signIn() {
-  document.getElementById("signinModal").classList.add("is-active");
+function signOut() {
+  auth
+    .signOut()
+    .then(() => {
+      r_e("signinBtn").classList.remove("is-hidden");
+      r_e("signoutBtn").classList.add("is-hidden");
+      r_e("event-inputs").classList.add("is-hidden");
+      localStorage.setItem("signedIn", "false");
+    })
+    .catch((error) => {
+      alert("Sign out failed: " + error.message);
+    });
 }
 
-// Close the modal
-function closeModal() {
-  document.getElementById("signinModal").classList.remove("is-active");
-}
-
-// Handle form submission
 function submitSignIn() {
+  // Get the email and password entered by the user
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if (email && password) {
-    // Mock sign-in logic
-    console.log(`Signed in with Email: ${email}, Password: ${password}`);
-    closeModal();
-    document.getElementById("signinBtn").classList.add("is-hidden");
-    document.getElementById("signoutBtn").classList.remove("is-hidden");
-  } else {
-    alert("Please fill in both fields.");
+  // Firebase sign-in logic
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      // Hide the sign-in modal
+      closeModal();
+
+      // Show the event inputs form (attendance form)
+      document.getElementById("event-inputs").classList.remove("is-hidden");
+
+      // Optionally show a message to the user that they are signed in
+      document.getElementById("signinBtn").classList.add("is-hidden"); // Hide Sign In button
+      document.getElementById("signoutBtn").classList.remove("is-hidden"); // Show Sign Out button
+    })
+    .catch((error) => {
+      alert("Error signing in!");
+      // Optionally show an error message to the user
+    });
+}
+
+// -------------------------------------------------------Search function
+function renderFilteredRoster(searchTerm) {
+  const rosterContainer = document.querySelector(".member-roster");
+  rosterContainer.innerHTML = "";
+
+  const filtered = membersData.filter((member) =>
+    `${member.first_name} ${member.last_name}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  filtered.forEach((member) => {
+    const memberDiv = document.createElement("div");
+    memberDiv.classList.add("column", "is-one-third");
+
+    memberDiv.innerHTML = `
+        <div class="card">
+          <div class="card-content">
+            <p class="title is-5">${member.first_name} ${member.last_name}</p>
+            <p><strong>Year:</strong> ${member.Standing}</p>
+            <p><strong>Status:</strong> ${member.membership_status}</p>
+          </div>
+        </div>
+      `;
+
+    rosterContainer.appendChild(memberDiv);
+  });
+}
+
+// Search Button event listener
+document.getElementById("rosterSearchBtn").addEventListener("click", () => {
+  const searchValue = document.getElementById("rosterSearch").value;
+  renderFilteredRoster(searchValue);
+});
+
+// reset button event listener
+document.getElementById("rosterResetBtn").addEventListener("click", () => {
+  document.getElementById("rosterSearch").value = ""; // Clear input
+  renderFilteredRoster(""); // Show full roster
+});
+
+// --------------------------------------------------------- joining
+function handleSubmit(event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  // Get values from form
+  const fullName = document.querySelector('input[type="text"]').value;
+  const email = document.querySelector('input[type="email"]').value;
+  const password = document.querySelector('input[type="password"]').value;
+  const year = document.querySelector("select").value;
+  const major = document.querySelector(
+    'input[placeholder="e.g. Risk Management"]'
+  ).value;
+
+  // Validate input values
+  if (!fullName || !email || !password || !year || !major) {
+    alert("Please fill in all fields.");
+    return;
   }
+
+  // Create a new user with Firebase Authentication
+  auth
+    .createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // User registered successfully
+      const user = userCredential.user;
+
+      // Add additional user data to Firestore
+      db.collection("Users")
+        .doc(user.uid)
+        .set({
+          name: fullName,
+          email: email,
+          year: year,
+          major: major,
+          uid: user.uid,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+          // Successfully added to Firestore, show thank you message
+          document.getElementById("join-form").reset(); // Reset the form
+          document.getElementById("thank-you").classList.remove("is-hidden");
+          setTimeout(() => {
+            document.getElementById("thank-you").classList.add("is-hidden");
+          }, 5000); // Hide the "Thank You" message after 5 seconds
+        })
+        .catch((error) => {
+          console.error("Error adding user to Firestore: ", error);
+        });
+    })
+    .catch((error) => {
+      console.error("Error creating user: ", error);
+      alert("Error creating user: " + error.message);
+    });
+}
+
+function submitAttendance() {
+  const enteredCode = document.getElementById("EventCode").value;
+
+  if (!enteredCode) {
+    alert("Please enter an event code.");
+    return;
+  }
+
+  // Reference to the Events collection in Firestore
+  const eventsRef = db.collection("Events");
+
+  // Query the Events collection to find an event with the matching code
+  eventsRef
+    .where("code", "==", enteredCode) // Assuming 'code' is the field you're matching
+    .get()
+    .then((querySnapshot) => {
+      if (querySnapshot.empty) {
+        // If no matching event is found
+        alert("No event found with that code.");
+        return;
+      }
+
+      // If matching event(s) are found
+      querySnapshot.forEach((doc) => {
+        const eventData = doc.data();
+        const eventId = doc.id;
+
+        // Assuming user is already signed in and their UID is available
+        const userId = firebase.auth().currentUser.uid;
+
+        // Reference to the Attendance collection
+        const attendanceRef = db.collection("Attendance");
+
+        // Check if the user has already attended this event
+        attendanceRef
+          .where("user_id", "==", userId)
+          .where("event_id", "==", eventId)
+          .get()
+          .then((attendanceSnapshot) => {
+            if (!attendanceSnapshot.empty) {
+              // If the user has already attended this event
+              alert("You have already attended this event.");
+            } else {
+              // If the user has not attended, add their attendance
+              attendanceRef
+                .add({
+                  user_id: userId,
+                  event_id: eventId,
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                })
+                .then(() => {
+                  // Update the user's document to add the eventId to their eventsAttended array
+                  const userRef = db.collection("Users").doc(userId);
+
+                  userRef
+                    .update({
+                      eventsAttended:
+                        firebase.firestore.FieldValue.arrayUnion(eventId),
+                    })
+                    .then(() => {
+                      alert(
+                        "Attendance submitted and event added to your attended list."
+                      );
+                    })
+                    .catch((error) => {
+                      alert("Error updating user data: " + error.message);
+                    });
+                })
+                .catch((error) => {
+                  alert("Error submitting attendance: " + error.message);
+                });
+            }
+          })
+          .catch((error) => {
+            alert("Error checking attendance: " + error.message);
+          });
+      });
+    })
+    .catch((error) => {
+      alert("Error fetching events: " + error.message);
+    });
+  document.getElementById("EventCode").value = "";
+  document.getElementById("EventName").value = "";
 }
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
   authDomain: "infosys424project.firebaseapp.com",
@@ -134,7 +358,7 @@ firebase.initializeApp(firebaseConfig);
 let auth = firebase.auth();
 let db = firebase.firestore();
 
-// Add a user
+//Add a user
 db.collection("Users")
   .doc("user1")
   .set({
@@ -158,10 +382,9 @@ db.collection("Events")
       room: "101",
     },
     description: "An event to network with professionals.",
+<<<<<<< HEAD
+=======
+    code: CODE1,
+    attendees: ["user1", "user2"],
+>>>>>>> abfffcb044455e0dc7776cce95417ab543bbbd2f
   });
-
-// Add attendance record
-db.collection("Attendance").doc("att1").set({
-  user_id: "user1",
-  event_id: "event1",
-});
