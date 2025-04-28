@@ -432,24 +432,6 @@ let db = firebase.firestore();
 //     events_attended: ["Event1", "Event 2"],
 //   });
 
-<<<<<<< HEAD
-db.collection("Events")
-  .doc("event1")
-  .set({
-    event_name: "Speaker 1",
-    date: "2024-04-15",
-    location: {
-      building: "ABC Hall",
-      room: "101",
-    },
-    description: "An event to network with professionals.",
-<<<<<<< HEAD
-=======
-    code: CODE1,
-    attendees: ["user1", "user2"],
->>>>>>> abfffcb044455e0dc7776cce95417ab543bbbd2f
-  });
-=======
 // db.collection("Events")
 //   .doc("event1")
 //   .set({
@@ -463,4 +445,3 @@ db.collection("Events")
 //     code: CODE1,
 //     attendees: ["user1", "user2"],
 //   });
->>>>>>> 5045d4e848e8c337b5a90eecbee1b1f8e3db5bbb
