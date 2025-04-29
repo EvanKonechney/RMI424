@@ -543,6 +543,8 @@ function submitLeadershipSignIn() {
     .catch((err) => {
       alert("Leadership sign-in failed: " + err.message);
     });
+  document.getElementById("leadershipEmail").value = "";
+  document.getElementById("leadershipPassword").value = "";
 }
 
 // Leadership sign-out
