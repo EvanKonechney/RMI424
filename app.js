@@ -275,13 +275,12 @@ function handleSubmit(event) {
   const lastName = document.getElementById("lastName").value;
   const countryCode = document.getElementById("countryCode").value;
   const phoneNumber = document.getElementById("phoneNumber").value;
-  const email = document.querySelector('input[type="email"]').value;
-  const password = document.querySelector('input[type="password"]').value;
-  const year = document.querySelector("select").value;
-  const major = document.querySelector(
-    'input[placeholder="e.g. Risk Management"]'
-  ).value;
   const fullPhoneNumber = `${countryCode}${phoneNumber}`;
+
+  const email = document.getElementById("joinEmail").value;
+  const password = document.getElementById("joinPassword").value;
+  const year = document.getElementById("yearSelect").value;
+  const major = document.getElementById("majorInput").value;
 
   // Validate input values
   if (
