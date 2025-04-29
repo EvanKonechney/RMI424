@@ -335,88 +335,88 @@ function handleSubmit(event) {
     });
 }
 
-function submitAttendance() {
-  const enteredCode = document.getElementById("EventCode").value;
+// function submitAttendance() {
+//   const enteredCode = document.getElementById("EventCode").value;
 
-  if (!enteredCode) {
-    alert("Please enter an event code.");
-    return;
-  }
+//   if (!enteredCode) {
+//     alert("Please enter an event code.");
+//     return;
+//   }
 
-  // Reference to the Events collection in Firestore
-  const eventsRef = db.collection("Events");
-  eventsRef
-    .where("code", "==", enteredCode)
-    .get()
-    .then((querySnapshot) => {
-      if (querySnapshot.empty) {
-        // If no matching event is found
-        alert("No event found with that code.");
-        return;
-      }
+//   // Reference to the Events collection in Firestore
+//   const eventsRef = db.collection("Events");
+//   eventsRef
+//     .where("code", "==", enteredCode)
+//     .get()
+//     .then((querySnapshot) => {
+//       if (querySnapshot.empty) {
+//         // If no matching event is found
+//         alert("No event found with that code.");
+//         return;
+//       }
 
-      // If matching event(s) are found
-      querySnapshot.forEach((doc) => {
-        const eventData = doc.data();
-        const eventId = doc.id;
+//       // If matching event(s) are found
+//       querySnapshot.forEach((doc) => {
+//         const eventData = doc.data();
+//         const eventId = doc.id;
 
-        // Assuming user is already signed in and their UID is available
-        const userId = firebase.auth().currentUser.uid;
+//         // Assuming user is already signed in and their UID is available
+//         const userId = firebase.auth().currentUser.uid;
 
-        // Reference to the Attendance collection
-        const attendanceRef = db.collection("Attendance");
+//         // Reference to the Attendance collection
+//         const attendanceRef = db.collection("Attendance");
 
-        // Check if the user has already attended this event
-        attendanceRef
-          .where("user_id", "==", userId)
-          .where("event_id", "==", eventId)
-          .get()
-          .then((attendanceSnapshot) => {
-            if (!attendanceSnapshot.empty) {
-              // If the user has already attended this event
-              alert("You have already attended this event.");
-            } else {
-              // If the user has not attended, add their attendance
-              attendanceRef
-                .add({
-                  user_id: userId,
-                  event_id: eventId,
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                })
-                .then(() => {
-                  // Update the user's document to add the eventId to their eventsAttended array
-                  const userRef = db.collection("Users").doc(userId);
+//         // Check if the user has already attended this event
+//         attendanceRef
+//           .where("user_id", "==", userId)
+//           .where("event_id", "==", eventId)
+//           .get()
+//           .then((attendanceSnapshot) => {
+//             if (!attendanceSnapshot.empty) {
+//               // If the user has already attended this event
+//               alert("You have already attended this event.");
+//             } else {
+//               // If the user has not attended, add their attendance
+//               attendanceRef
+//                 .add({
+//                   user_id: userId,
+//                   event_id: eventId,
+//                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+//                 })
+//                 .then(() => {
+//                   // Update the user's document to add the eventId to their eventsAttended array
+//                   const userRef = db.collection("Users").doc(userId);
 
-                  userRef
-                    .update({
-                      eventsAttended:
-                        firebase.firestore.FieldValue.arrayUnion(eventId),
-                    })
-                    .then(() => {
-                      alert(
-                        "Attendance submitted and event added to your attended list."
-                      );
-                    })
-                    .catch((error) => {
-                      alert("Error updating user data: " + error.message);
-                    });
-                })
-                .catch((error) => {
-                  alert("Error submitting attendance: " + error.message);
-                });
-            }
-          })
-          .catch((error) => {
-            alert("Error checking attendance: " + error.message);
-          });
-      });
-    })
-    .catch((error) => {
-      alert("Error fetching events: " + error.message);
-    });
-  document.getElementById("EventCode").value = "";
-  document.getElementById("EventName").value = "";
-}
+//                   userRef
+//                     .update({
+//                       eventsAttended:
+//                         firebase.firestore.FieldValue.arrayUnion(eventId),
+//                     })
+//                     .then(() => {
+//                       alert(
+//                         "Attendance submitted and event added to your attended list."
+//                       );
+//                     })
+//                     .catch((error) => {
+//                       alert("Error updating user data: " + error.message);
+//                     });
+//                 })
+//                 .catch((error) => {
+//                   alert("Error submitting attendance: " + error.message);
+//                 });
+//             }
+//           })
+//           .catch((error) => {
+//             alert("Error checking attendance: " + error.message);
+//           });
+//       });
+//     })
+//     .catch((error) => {
+//       alert("Error fetching events: " + error.message);
+//     });
+//   document.getElementById("EventCode").value = "";
+//   document.getElementById("EventName").value = "";
+// }
 
 async function loadCalendarEvents() {
   const eventList = document.getElementById("event-list");
@@ -557,4 +557,44 @@ function leadershipSignOut() {
       leadershipSignInButton.classList.remove("is-hidden");
       leadershipSignOutButton.classList.add("is-hidden");
     });
+}
+
+// Track attendance
+async function handleSubmitAttendance(event) {
+  event.preventDefault();
+  const eventCodeInput = document.getElementById("eventCode").value.trim();
+  const user = auth.currentUser;
+  if (!user || !eventCodeInput) return;
+
+  const userRef = db.collection("Users").doc(user.uid);
+  const userSnap = await userRef.get();
+  const userData = userSnap.data();
+  const fullName = `${userData.first_name} ${userData.last_name}`;
+
+  // 1. Find the event document by matching the code
+  const eventQuery = await db
+    .collection("Events")
+    .where("code", "==", eventCodeInput)
+    .get();
+  if (eventQuery.empty) {
+    alert("Invalid event code.");
+    return;
+  }
+
+  const eventDoc = eventQuery.docs[0];
+  const eventRef = eventDoc.ref;
+  const eventName = eventDoc.data().event_name;
+
+  // 2. Add user full name to the event's attendees array
+  await eventRef.update({
+    attendees: firebase.firestore.FieldValue.arrayUnion(fullName),
+  });
+
+  // 3. Add event name to the user's events_attended array
+  await userRef.update({
+    events_attended: firebase.firestore.FieldValue.arrayUnion(eventName),
+  });
+
+  alert("Attendance recorded successfully.");
+  document.getElementById("eventCode").value = "";
 }

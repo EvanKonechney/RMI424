@@ -338,25 +338,19 @@
 
         <!-- Event Input Fields (Hidden until signed in) -->
         <div id="event-inputs" class="is-hidden">
-          <div class="search-box">
+          <div class="search-box mt-4">
             <input
               type="text"
-              id="EventName"
-              placeholder="Enter Event Name"
-              class="input"
-              style="width: 50%; margin-bottom: 1rem; margin-top: 2rem"
-            />
-          </div>
-          <div class="search-box">
-            <input
-              type="text"
-              id="EventCode"
+              id="eventCode"
               placeholder="Enter Event Code"
               class="input"
               style="width: 50%"
             />
           </div>
-          <button class="button is-link mt-4" onclick="submitAttendance()">
+          <button
+            class="button is-link mt-4"
+            onclick="handleSubmitAttendance(event)"
+          >
             Submit Attendance
           </button>
         </div>
