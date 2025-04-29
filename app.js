@@ -65,7 +65,7 @@ r_e("calendar").addEventListener("click", () => {
 let membersData = [];
 
 r_e("roster").addEventListener("click", async () => {
-  // Hide all other pages, show roster page
+  // Hide other pages
   r_e("homepage").classList.add("is-hidden");
   r_e("aboutpage").classList.add("is-hidden");
   r_e("joinpage").classList.add("is-hidden");
@@ -73,51 +73,79 @@ r_e("roster").addEventListener("click", async () => {
   r_e("calendarpage").classList.add("is-hidden");
   r_e("rosterpage").classList.remove("is-hidden");
 
-  // Clear out any previous roster display
   const rosterContainer = document.querySelector(".member-roster");
   rosterContainer.innerHTML = "";
 
-  try {
-    // Fetch all users from Firestore
-    const snapshot = await db.collection("Users").get();
-    membersData = []; // Clear previous data
+  let isAdmin = false; // Default assume not admin
 
+  try {
+    const currentUser = firebase.auth().currentUser;
+
+    if (currentUser) {
+      // If a user is signed in, check if they're admin
+      const currentUserDoc = await db
+        .collection("Users")
+        .doc(currentUser.uid)
+        .get();
+      const currentUserData = currentUserDoc.data();
+      isAdmin = currentUserData?.role === "admin"; // Only true if role is exactly "admin"
+    }
+
+    // Load all users from Firestore
+    const snapshot = await db.collection("Users").get();
     snapshot.forEach((doc) => {
       const data = doc.data();
-      membersData.push({ id: doc.id, ...data }); // Save ID too for deletion
+      membersData.push(data);
 
       const memberDiv = document.createElement("div");
       memberDiv.classList.add("column", "is-one-third");
 
-      // Create the card content with a delete button
-      memberDiv.innerHTML = `
-        <div class="card">
-          <div class="card-content">
-            <p class="title is-5">${data.first_name} ${data.last_name}</p>
-            <p><strong>Year:</strong> ${data.year}</p>
-            <p><strong>Major:</strong> ${data.major}</p>
-            <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
-          </div>
-        </div>
-      `;
+      // Build card HTML
+      let cardHTML = `
+          <div class="card">
+            <div class="card-content">
+              <p class="title is-5">${data.first_name} ${data.last_name}</p>
+              <p><strong>Year:</strong> ${data.year}</p>
+              <p><strong>Major:</strong> ${data.major}</p>
+        `;
 
-      // Add the card to the page
+      // Only add delete button if current viewer is admin
+      if (isAdmin) {
+        cardHTML += `
+            <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
+          `;
+      }
+
+      cardHTML += `
+            </div>
+          </div>
+        `;
+
+      memberDiv.innerHTML = cardHTML;
       rosterContainer.appendChild(memberDiv);
 
-      // Add event listener for delete button
-      const deleteButton = memberDiv.querySelector(".delete-member-button");
-      deleteButton.addEventListener("click", async () => {
-        if (confirm(`Are you sure you want to delete ${data.name}?`)) {
-          try {
-            await db.collection("Users").doc(doc.id).delete();
-            memberDiv.remove(); // Remove the card from the DOM
-            console.log(`${data.name} deleted successfully.`);
-          } catch (error) {
-            console.error("Error deleting user:", error);
-            alert("Failed to delete user. Please try again.");
+      // Add event listener to delete button (only if admin)
+      if (isAdmin) {
+        const deleteButton = memberDiv.querySelector(".delete-member-button");
+        deleteButton.addEventListener("click", async () => {
+          if (
+            confirm(
+              `Are you sure you want to delete ${data.first_name} ${data.last_name}?`
+            )
+          ) {
+            try {
+              await db.collection("Users").doc(doc.id).delete();
+              memberDiv.remove();
+              console.log(
+                `${data.first_name} ${data.last_name} deleted successfully.`
+              );
+            } catch (error) {
+              console.error("Error deleting user:", error);
+              alert("Failed to delete user. Please try again.");
+            }
           }
-        }
-      });
+        });
+      }
     });
   } catch (error) {
     console.error("Error loading roster:", error);
@@ -287,6 +315,7 @@ function handleSubmit(event) {
           year: year,
           major: major,
           uid: user.uid,
+          role: "member",
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         })
         .then(() => {
@@ -480,7 +509,6 @@ function isLeadershipSignedIn() {
   return localStorage.getItem("leadershipSignedIn") === "true";
 }
 
-// Leadership sign-in submission
 function submitLeadershipSignIn() {
   const email = r_e("leadershipEmail").value;
   const password = r_e("leadershipPassword").value;
@@ -489,13 +517,14 @@ function submitLeadershipSignIn() {
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      const user = userCredential.user; // Defined inside this block
+      const user = userCredential.user;
 
       db.collection("Users")
         .doc(user.uid)
         .get()
         .then((doc) => {
-          if (doc.exists && doc.data().admin === 1) {
+          if (doc.exists && doc.data().role === "admin") {
+            // <-- changed this line
             localStorage.setItem("leadershipSignedIn", "true");
             closeLeadershipModal();
             leadershipSignInButton.classList.add("is-hidden");
@@ -503,7 +532,7 @@ function submitLeadershipSignIn() {
 
             alert("Leadership sign-in successful!");
           } else {
-            firebase.auth().signOut(); // Not an admin
+            firebase.auth().signOut();
             alert("You are not authorized.");
           }
         })
