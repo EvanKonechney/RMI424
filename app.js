@@ -598,3 +598,79 @@ async function handleSubmitAttendance(event) {
   alert("Attendance recorded successfully.");
   document.getElementById("eventCode").value = "";
 }
+
+//puppeteer
+const puppeteer = require("puppeteer");
+
+async function go() {
+  const browser = await puppeteer.launch({
+    headless: false,
+    slowMo: 50, // Optional: slows down interactions for debugging
+    defaultViewport: null,
+  });
+
+  const page = await browser.newPage();
+
+  // Navigate to the page
+  await page.goto("http://127.0.0.1:5501/index.html#");
+  await page.waitForSelector("#joinpage", { visible: true });
+
+  // Log the page content for debugging
+  const content = await page.content();
+  console.log(content);
+
+  // Fill out the form
+  await page.type("#firstName", "John");
+  await page.type("#lastName", "Doe");
+  await page.type("#joinEmail", "johndoe@example.com");
+  await page.type("#phoneNumber", "1234567890");
+  await page.type("#joinPassword", "password123");
+  await page.select("#yearSelect", "Sophomore");
+  await page.type("#majorInput", "Computer Science");
+
+  // Submit the form
+  await page.click("#join-form button[type='submit']");
+
+  // Wait for "Thank You" message
+  await page.waitForSelector("#thank-you", { visible: true });
+
+  console.log("Form submitted successfully!");
+
+  // Close the browser after a few seconds
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await browser.close();
+}
+
+go();
+
+async function testRosterSearch() {
+  const browser = await puppeteer.launch({ headless: false }); // headless: false so you can see it
+  const page = await browser.newPage();
+
+  // Open your local server
+  await page.goto("http://127.0.0.1:5501/index.html", {
+    waitUntil: "networkidle0",
+  });
+
+  // Wait for the search input and button to load
+  await page.waitForSelector("#rosterSearch");
+  await page.waitForSelector("#rosterSearchBtn");
+
+  // Type into the search input
+  await page.type("#rosterSearch", "RMIS");
+  //delay
+  await new Promise((r) => setTimeout(r, 1000));
+
+  // Click the search button
+  await page.click("#rosterSearchBtn");
+
+  // Wait for the DOM to update (may need to adjust this depending on how fast your filter runs)
+  await page.waitForTimeout(1000);
+
+  // Optional: Take a screenshot of the result
+  await page.screenshot({ path: "filtered_roster.png" });
+
+  await browser.close();
+}
+
+testRosterSearch();
