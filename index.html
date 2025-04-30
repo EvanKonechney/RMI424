@@ -433,6 +433,56 @@
         <div class="container">
           <h1 class="title">Event Calendar</h1>
           <div id="event-list"></div>
+          <!-- Add Event Button (Visible only to Admin) -->
+          <div
+            class="has-text-centered mt-5"
+            id="addEventSection"
+            style="display: none"
+          >
+            <button class="button is-primary" onclick="openAddEventModal()">
+              Add New Event
+            </button>
+          </div>
+          <!-- Add Event Modal -->
+          <div class="modal" id="addEventModal">
+            <div class="modal-background" onclick="closeAddEventModal()"></div>
+            <div class="modal-content">
+              <div class="box">
+                <h3 class="title is-4">Add New Event</h3>
+                <div class="field">
+                  <label class="label">Event Name</label>
+                  <input class="input" id="newEventName" type="text" required />
+                </div>
+                <div class="field">
+                  <label class="label">Date</label>
+                  <input class="input" id="newEventDate" type="date" required />
+                </div>
+                <div class="field">
+                  <label class="label">Description</label>
+                  <textarea
+                    class="textarea"
+                    id="newEventDescription"
+                    required
+                  ></textarea>
+                </div>
+                <div class="field">
+                  <label class="label">Event Code</label>
+                  <input class="input" id="newEventCode" type="text" required />
+                </div>
+                <div class="buttons is-right">
+                  <button class="button is-success" onclick="submitNewEvent()">
+                    Submit
+                  </button>
+                  <button
+                    class="button is-light"
+                    onclick="closeAddEventModal()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>

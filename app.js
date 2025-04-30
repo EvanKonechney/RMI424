@@ -334,89 +334,6 @@ function handleSubmit(event) {
     });
 }
 
-// function submitAttendance() {
-//   const enteredCode = document.getElementById("EventCode").value;
-
-//   if (!enteredCode) {
-//     alert("Please enter an event code.");
-//     return;
-//   }
-
-//   // Reference to the Events collection in Firestore
-//   const eventsRef = db.collection("Events");
-//   eventsRef
-//     .where("code", "==", enteredCode)
-//     .get()
-//     .then((querySnapshot) => {
-//       if (querySnapshot.empty) {
-//         // If no matching event is found
-//         alert("No event found with that code.");
-//         return;
-//       }
-
-//       // If matching event(s) are found
-//       querySnapshot.forEach((doc) => {
-//         const eventData = doc.data();
-//         const eventId = doc.id;
-
-//         // Assuming user is already signed in and their UID is available
-//         const userId = firebase.auth().currentUser.uid;
-
-//         // Reference to the Attendance collection
-//         const attendanceRef = db.collection("Attendance");
-
-//         // Check if the user has already attended this event
-//         attendanceRef
-//           .where("user_id", "==", userId)
-//           .where("event_id", "==", eventId)
-//           .get()
-//           .then((attendanceSnapshot) => {
-//             if (!attendanceSnapshot.empty) {
-//               // If the user has already attended this event
-//               alert("You have already attended this event.");
-//             } else {
-//               // If the user has not attended, add their attendance
-//               attendanceRef
-//                 .add({
-//                   user_id: userId,
-//                   event_id: eventId,
-//                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-//                 })
-//                 .then(() => {
-//                   // Update the user's document to add the eventId to their eventsAttended array
-//                   const userRef = db.collection("Users").doc(userId);
-
-//                   userRef
-//                     .update({
-//                       eventsAttended:
-//                         firebase.firestore.FieldValue.arrayUnion(eventId),
-//                     })
-//                     .then(() => {
-//                       alert(
-//                         "Attendance submitted and event added to your attended list."
-//                       );
-//                     })
-//                     .catch((error) => {
-//                       alert("Error updating user data: " + error.message);
-//                     });
-//                 })
-//                 .catch((error) => {
-//                   alert("Error submitting attendance: " + error.message);
-//                 });
-//             }
-//           })
-//           .catch((error) => {
-//             alert("Error checking attendance: " + error.message);
-//           });
-//       });
-//     })
-//     .catch((error) => {
-//       alert("Error fetching events: " + error.message);
-//     });
-//   document.getElementById("EventCode").value = "";
-//   document.getElementById("EventName").value = "";
-// }
-
 async function loadCalendarEvents() {
   const eventList = document.getElementById("event-list");
   eventList.innerHTML = ""; // Clear previous content
@@ -599,6 +516,54 @@ async function handleSubmitAttendance(event) {
   alert("Attendance recorded successfully.");
   document.getElementById("eventCode").value = "";
 }
+
+// Creating new events
+
+function openAddEventModal() {
+  document.getElementById("addEventModal").classList.add("is-active");
+}
+function closeAddEventModal() {
+  document.getElementById("addEventModal").classList.remove("is-active");
+}
+
+async function submitNewEvent() {
+  const name = document.getElementById("newEventName").value.trim();
+  const date = document.getElementById("newEventDate").value;
+  const description = document
+    .getElementById("newEventDescription")
+    .value.trim();
+  const code = document.getElementById("newEventCode").value.trim();
+
+  if (!name || !date || !description || !code) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  try {
+    await db.collection("Events").add({
+      event_name: name,
+      date: date,
+      description: description,
+      code: code,
+      location: {
+        building: "TBD",
+        room: "TBD",
+      },
+      attendees: [],
+    });
+
+    closeAddEventModal();
+    loadCalendarEvents(); // Refresh event list
+    alert("Event added successfully!");
+  } catch (error) {
+    alert("Failed to add event: " + error.message);
+  }
+}
+
+const isAdmin = localStorage.getItem("leadershipSignedIn") === "true";
+document.getElementById("addEventSection").style.display = isAdmin
+  ? "block"
+  : "none";
 
 //puppeteer
 const puppeteer = require("puppeteer");
