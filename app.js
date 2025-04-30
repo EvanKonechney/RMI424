@@ -165,6 +165,24 @@ function renderFilteredRoster(searchTerm) {
   });
 }
 
+// Leadership button toggle
+const leadershipSignedIn =
+  localStorage.getItem("leadershipSignedIn") === "true";
+const leadershipSignInButton = document.getElementById(
+  "leadershipSignInButton"
+);
+const leadershipSignOutButton = document.getElementById(
+  "leadershipSignOutButton"
+);
+
+if (leadershipSignedIn) {
+  leadershipSignInButton.classList.add("is-hidden");
+  leadershipSignOutButton.classList.remove("is-hidden");
+} else {
+  leadershipSignInButton.classList.remove("is-hidden");
+  leadershipSignOutButton.classList.add("is-hidden");
+}
+
 // Updated button logic
 document.getElementById("rosterSearchBtn").addEventListener("click", () => {
   const searchValue = document.getElementById("rosterSearch").value;
