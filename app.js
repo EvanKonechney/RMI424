@@ -357,9 +357,16 @@ async function loadCalendarEvents() {
       eventDiv.innerHTML = `
         <h2 class="title is-4">${event.event_name}</h2>
         <p><strong>Date:</strong> ${event.date}</p>
-        <p><strong>Location:</strong> ${event.location.building} Room ${event.location.room}</p>
-        <p>${event.description}</p>
-      `;
+        <p><strong>Location:</strong> ${event.location.building} Room ${
+        event.location.room
+      }</p>
+        <p>${event.description || ""}</p>
+  ${
+    currentUserIsAdmin
+      ? `<button class="button is-danger is-small mt-3" onclick="deleteEvent('${event.id}')">Delete</button>`
+      : ""
+  }
+`;
 
       eventList.appendChild(eventDiv);
     });
@@ -444,6 +451,12 @@ function submitLeadershipSignIn() {
           closeLeadershipModal();
           leadershipSignInButton.classList.add("is-hidden");
           leadershipSignOutButton.classList.remove("is-hidden");
+
+          // ✅ Fix: Display admin-only section
+          const addEventSection = document.getElementById("addEventSection");
+          if (addEventSection) {
+            addEventSection.style.display = "block";
+          }
 
           alert("Leadership sign-in successful!");
         } else {
@@ -560,10 +573,53 @@ async function submitNewEvent() {
   }
 }
 
-const isAdmin = localStorage.getItem("leadershipSignedIn") === "true";
-document.getElementById("addEventSection").style.display = isAdmin
-  ? "block"
-  : "none";
+// const isAdmin = localStorage.getItem("leadershipSignedIn") === "true";
+// document.getElementById("addEventSection").style.display = isAdmin
+//   ? "block"
+//   : "none";
+
+// Delete events
+async function deleteEvent(eventId) {
+  if (!confirm("Are you sure you want to delete this event?")) return;
+
+  try {
+    await db.collection("Events").doc(eventId).delete();
+    alert("Event deleted.");
+    loadCalendarEvents(); // Refresh the list
+  } catch (error) {
+    console.error("Failed to delete event:", error);
+    alert("Failed to delete event: " + error.message);
+  }
+}
+
+window.onload = function () {
+  const leadershipSignedIn =
+    localStorage.getItem("leadershipSignedIn") === "true";
+  currentUserIsAdmin = leadershipSignedIn;
+
+  // Leadership button visibility
+  document
+    .getElementById("leadershipSignInButton")
+    .classList.toggle("is-hidden", leadershipSignedIn);
+  document
+    .getElementById("leadershipSignOutButton")
+    .classList.toggle("is-hidden", !leadershipSignedIn);
+
+  // Admin-only button visibility
+  const addEventSection = document.getElementById("addEventSection");
+  if (addEventSection) {
+    addEventSection.style.display = currentUserIsAdmin ? "block" : "none";
+  }
+
+  // User sign-in buttons
+  if (isUserSignedIn()) {
+    document.getElementById("signinBtn").classList.add("is-hidden");
+    document.getElementById("signoutBtn").classList.remove("is-hidden");
+  } else {
+    document.getElementById("signinBtn").classList.remove("is-hidden");
+    document.getElementById("signoutBtn").classList.add("is-hidden");
+  }
+};
 
 //puppeteer
 const puppeteer = require("puppeteer");
