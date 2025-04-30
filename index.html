@@ -433,6 +433,7 @@
         <div class="container">
           <h1 class="title">Event Calendar</h1>
           <div id="event-list"></div>
+
           <!-- Add Event Button (Visible only to Admin) -->
           <div
             class="has-text-centered mt-5"
@@ -443,20 +444,27 @@
               Add New Event
             </button>
           </div>
+
           <!-- Add Event Modal -->
           <div class="modal" id="addEventModal">
             <div class="modal-background" onclick="closeAddEventModal()"></div>
             <div class="modal-content">
               <div class="box">
                 <h3 class="title is-4">Add New Event</h3>
+
+                <!-- Event Name -->
                 <div class="field">
                   <label class="label">Event Name</label>
                   <input class="input" id="newEventName" type="text" required />
                 </div>
+
+                <!-- Date -->
                 <div class="field">
                   <label class="label">Date</label>
                   <input class="input" id="newEventDate" type="date" required />
                 </div>
+
+                <!-- Description -->
                 <div class="field">
                   <label class="label">Description</label>
                   <textarea
@@ -465,10 +473,36 @@
                     required
                   ></textarea>
                 </div>
+
+                <!-- Event Code -->
                 <div class="field">
                   <label class="label">Event Code</label>
                   <input class="input" id="newEventCode" type="text" required />
                 </div>
+
+                <!-- Building -->
+                <div class="field">
+                  <label class="label">Building</label>
+                  <input
+                    class="input"
+                    id="newEventBuilding"
+                    type="text"
+                    placeholder="Enter building name"
+                  />
+                </div>
+
+                <!-- Room -->
+                <div class="field">
+                  <label class="label">Room</label>
+                  <input
+                    class="input"
+                    id="newEventRoom"
+                    type="text"
+                    placeholder="Enter room number"
+                  />
+                </div>
+
+                <!-- Buttons -->
                 <div class="buttons is-right">
                   <button class="button is-success" onclick="submitNewEvent()">
                     Submit

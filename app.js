@@ -546,9 +546,11 @@ async function submitNewEvent() {
     .getElementById("newEventDescription")
     .value.trim();
   const code = document.getElementById("newEventCode").value.trim();
+  const building = document.getElementById("newEventBuilding").value.trim();
+  const room = document.getElementById("newEventRoom").value.trim();
 
-  if (!name || !date || !description || !code) {
-    alert("Please fill in all fields.");
+  if (!name || !date || !description || !code || !building || !room) {
+    alert("Please fill in all fields, including building and room location.");
     return;
   }
 
@@ -559,17 +561,16 @@ async function submitNewEvent() {
       description: description,
       code: code,
       location: {
-        building: "TBD",
-        room: "TBD",
+        building: building,
+        room: room,
       },
       attendees: [],
     });
-
-    closeAddEventModal();
-    loadCalendarEvents(); // Refresh event list
-    alert("Event added successfully!");
+    alert("Event created successfully!");
+    // Optionally clear the form or redirect
   } catch (error) {
-    alert("Failed to add event: " + error.message);
+    console.error("Error adding event: ", error);
+    alert("An error occurred while creating the event.");
   }
 }
 
