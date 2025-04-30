@@ -556,6 +556,7 @@ function leadershipSignOut() {
       alert("Signed out from leadership.");
       leadershipSignInButton.classList.remove("is-hidden");
       leadershipSignOutButton.classList.add("is-hidden");
+      location.reload();
     });
 }
 
