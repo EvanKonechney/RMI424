@@ -62,95 +62,118 @@ r_e("calendar").addEventListener("click", () => {
   loadCalendarEvents(); // Make sure this line is called
 });
 
-let membersData = [];
+let membersData = []; // Global storage
+let currentUserIsAdmin = false; // Admin status
 
+// Roster page click handler
 r_e("roster").addEventListener("click", async () => {
   // Hide other pages
-  r_e("homepage").classList.add("is-hidden");
-  r_e("aboutpage").classList.add("is-hidden");
-  r_e("joinpage").classList.add("is-hidden");
-  r_e("eventspage").classList.add("is-hidden");
-  r_e("calendarpage").classList.add("is-hidden");
+  ["homepage", "aboutpage", "joinpage", "eventspage", "calendarpage"].forEach(
+    (id) => r_e(id).classList.add("is-hidden")
+  );
   r_e("rosterpage").classList.remove("is-hidden");
 
   const rosterContainer = document.querySelector(".member-roster");
   rosterContainer.innerHTML = "";
 
-  let isAdmin = false; // Default assume not admin
-
   try {
     const currentUser = firebase.auth().currentUser;
 
     if (currentUser) {
-      // If a user is signed in, check if they're admin
       const currentUserDoc = await db
         .collection("Users")
         .doc(currentUser.uid)
         .get();
+
       const currentUserData = currentUserDoc.data();
-      isAdmin = currentUserData?.role === "admin"; // Only true if role is exactly "admin"
+      currentUserIsAdmin = currentUserData?.role === "admin";
     }
 
-    // Load all users from Firestore
-    const snapshot = await db.collection("Users").get();
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      membersData.push(data);
+    const snapshot = await db
+      .collection("Users")
+      .orderBy("timestamp", "desc")
+      .get();
 
-      const memberDiv = document.createElement("div");
-      memberDiv.classList.add("column", "is-one-third");
+    membersData = snapshot.docs.map((doc) => ({
+      ...doc.data(),
+      uid: doc.id,
+    }));
 
-      // Build card HTML
-      let cardHTML = `
-          <div class="card">
-            <div class="card-content">
-              <p class="title is-5">${data.first_name} ${data.last_name}</p>
-              <p><strong>Year:</strong> ${data.year}</p>
-              <p><strong>Major:</strong> ${data.major}</p>
-        `;
-
-      // Only add delete button if current viewer is admin
-      if (isAdmin) {
-        cardHTML += `
-            <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
-          `;
-      }
-
-      cardHTML += `
-            </div>
-          </div>
-        `;
-
-      memberDiv.innerHTML = cardHTML;
-      rosterContainer.appendChild(memberDiv);
-
-      // Add event listener to delete button (only if admin)
-      if (isAdmin) {
-        const deleteButton = memberDiv.querySelector(".delete-member-button");
-        deleteButton.addEventListener("click", async () => {
-          if (
-            confirm(
-              `Are you sure you want to delete ${data.first_name} ${data.last_name}?`
-            )
-          ) {
-            try {
-              await db.collection("Users").doc(doc.id).delete();
-              memberDiv.remove();
-              console.log(
-                `${data.first_name} ${data.last_name} deleted successfully.`
-              );
-            } catch (error) {
-              console.error("Error deleting user:", error);
-              alert("Failed to delete user. Please try again.");
-            }
-          }
-        });
-      }
-    });
+    renderFilteredRoster("", currentUserIsAdmin);
   } catch (error) {
     console.error("Error loading roster:", error);
     rosterContainer.innerHTML = `<p>Failed to load roster data.</p>`;
   }
+});
+
+function renderFilteredRoster(searchTerm) {
+  const rosterContainer = document.querySelector(".member-roster");
+  rosterContainer.innerHTML = "";
+
+  const filtered = membersData.filter((member) =>
+    `${member.first_name} ${member.last_name}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  filtered.forEach((member) => {
+    const memberDiv = document.createElement("div");
+    memberDiv.classList.add("column", "is-one-third");
+
+    let cardHTML = `
+      <div class="card">
+        <div class="card-content">
+          <p class="title is-5">${member.first_name} ${member.last_name}</p>
+          <p><strong>Year:</strong> ${member.year}</p>
+          <p><strong>Major:</strong> ${member.major}</p>
+    `;
+
+    if (currentUserIsAdmin) {
+      cardHTML += `
+        <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
+      `;
+    }
+
+    cardHTML += `
+        </div>
+      </div>
+    `;
+
+    memberDiv.innerHTML = cardHTML;
+    rosterContainer.appendChild(memberDiv);
+
+    if (currentUserIsAdmin) {
+      const deleteButton = memberDiv.querySelector(".delete-member-button");
+      deleteButton.addEventListener("click", async () => {
+        if (
+          confirm(
+            `Are you sure you want to delete ${member.first_name} ${member.last_name}?`
+          )
+        ) {
+          try {
+            await db.collection("Users").doc(member.uid).delete();
+            membersData = membersData.filter((m) => m.uid !== member.uid);
+            memberDiv.remove();
+            console.log(`${member.first_name} ${member.last_name} deleted.`);
+          } catch (error) {
+            console.error("Error deleting user:", error);
+            alert("Failed to delete user.");
+          }
+        }
+      });
+    }
+  });
+}
+
+// Updated button logic
+document.getElementById("rosterSearchBtn").addEventListener("click", () => {
+  const searchValue = document.getElementById("rosterSearch").value;
+  renderFilteredRoster(searchValue);
+});
+
+document.getElementById("rosterResetBtn").addEventListener("click", () => {
+  document.getElementById("rosterSearch").value = "";
+  renderFilteredRoster("");
 });
 
 //---------------------------------------------Sign In
@@ -223,48 +246,6 @@ function submitSignIn() {
       // Optionally show an error message to the user
     });
 }
-
-// -------------------------------------------------------Search function
-function renderFilteredRoster(searchTerm) {
-  const rosterContainer = document.querySelector(".member-roster");
-  rosterContainer.innerHTML = "";
-
-  const filtered = membersData.filter((member) =>
-    `${member.first_name} ${member.last_name}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
-
-  filtered.forEach((member) => {
-    const memberDiv = document.createElement("div");
-    memberDiv.classList.add("column", "is-one-third");
-
-    memberDiv.innerHTML = `
-        <div class="card">
-          <div class="card-content">
-            <p class="title is-5">${member.first_name} ${member.last_name}</p>
-            <p><strong>Year:</strong> ${member.year}</p>
-            <p><strong>Major:</strong> ${member.major}</p>
-            <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
-          </div>
-        </div>
-      `;
-
-    rosterContainer.appendChild(memberDiv);
-  });
-}
-
-// Search Button event listener
-document.getElementById("rosterSearchBtn").addEventListener("click", () => {
-  const searchValue = document.getElementById("rosterSearch").value;
-  renderFilteredRoster(searchValue);
-});
-
-// reset button event listener
-document.getElementById("rosterResetBtn").addEventListener("click", () => {
-  document.getElementById("rosterSearch").value = ""; // Clear input
-  renderFilteredRoster(""); // Show full roster
-});
 
 // --------------------------------------------------------- joining
 function handleSubmit(event) {
@@ -515,33 +496,34 @@ function submitLeadershipSignIn() {
   firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
       const user = userCredential.user;
 
-      db.collection("Users")
-        .doc(user.uid)
-        .get()
-        .then((doc) => {
-          if (doc.exists && doc.data().role === "admin") {
-            // <-- changed this line
-            localStorage.setItem("leadershipSignedIn", "true");
-            closeLeadershipModal();
-            leadershipSignInButton.classList.add("is-hidden");
-            leadershipSignOutButton.classList.remove("is-hidden");
+      try {
+        const doc = await db.collection("Users").doc(user.uid).get();
 
-            alert("Leadership sign-in successful!");
-          } else {
-            firebase.auth().signOut();
-            alert("You are not authorized.");
-          }
-        })
-        .catch((err) => {
-          alert("Failed to check admin status: " + err.message);
-        });
+        if (doc.exists && doc.data().role === "admin") {
+          currentUserIsAdmin = true; // ✅ Make sure this global flag is updated
+          localStorage.setItem("leadershipSignedIn", "true");
+
+          closeLeadershipModal();
+          leadershipSignInButton.classList.add("is-hidden");
+          leadershipSignOutButton.classList.remove("is-hidden");
+
+          alert("Leadership sign-in successful!");
+        } else {
+          await firebase.auth().signOut(); // Log them out if not admin
+          alert("You are not authorized.");
+        }
+      } catch (err) {
+        alert("Failed to check admin status: " + err.message);
+      }
     })
     .catch((err) => {
       alert("Leadership sign-in failed: " + err.message);
     });
+
+  // Clear form fields
   document.getElementById("leadershipEmail").value = "";
   document.getElementById("leadershipPassword").value = "";
 }
