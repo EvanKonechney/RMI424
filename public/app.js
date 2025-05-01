@@ -125,6 +125,11 @@ function renderFilteredRoster(searchTerm) {
     const memberDiv = document.createElement("div");
     memberDiv.classList.add("column", "is-one-third");
 
+    // Count events attended (default to 0 if not present)
+    const eventCount = Array.isArray(member.events_attended)
+      ? member.events_attended.length
+      : 0;
+
     let cardHTML = `
       <div class="card">
         <div class="card-content">
@@ -133,6 +138,12 @@ function renderFilteredRoster(searchTerm) {
           <p><strong>Major:</strong> ${member.major}</p>
     `;
 
+    // Show events attended if leadership
+    if (currentUserIsAdmin) {
+      cardHTML += `<p><strong>Events Attended:</strong> ${eventCount}</p>`;
+    }
+
+    // Show admin controls
     if (currentUserIsAdmin) {
       if (!member.approved) {
         cardHTML += `<button class="button is-success is-small accept-member-button" style="margin-top: 10px;">Accept</button>`;
@@ -144,6 +155,7 @@ function renderFilteredRoster(searchTerm) {
     memberDiv.innerHTML = cardHTML;
     rosterContainer.appendChild(memberDiv);
 
+    // Accept member handler
     if (currentUserIsAdmin && !member.approved) {
       const acceptButton = memberDiv.querySelector(".accept-member-button");
       acceptButton.addEventListener("click", async () => {
@@ -152,7 +164,7 @@ function renderFilteredRoster(searchTerm) {
             approved: true,
           });
           member.approved = true;
-          renderFilteredRoster(searchTerm); // Refresh roster
+          renderFilteredRoster(searchTerm); // Refresh
         } catch (error) {
           console.error("Failed to approve user:", error);
           alert("Error approving user.");
@@ -160,6 +172,7 @@ function renderFilteredRoster(searchTerm) {
       });
     }
 
+    // Delete member handler
     if (currentUserIsAdmin) {
       const deleteButton = memberDiv.querySelector(".delete-member-button");
       deleteButton.addEventListener("click", async () => {
