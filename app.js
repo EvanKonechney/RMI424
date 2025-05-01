@@ -116,12 +116,7 @@ function renderFilteredRoster(searchTerm) {
       .includes(searchTerm.toLowerCase())
   );
 
-  // Skip unapproved users unless admin
-  const visibleMembers = filtered.filter(
-    (member) => currentUserIsAdmin || member.approved === true
-  );
-
-  visibleMembers.forEach((member) => {
+  filtered.forEach((member) => {
     const memberDiv = document.createElement("div");
     memberDiv.classList.add("column", "is-one-third");
 
@@ -134,31 +129,18 @@ function renderFilteredRoster(searchTerm) {
     `;
 
     if (currentUserIsAdmin) {
-      if (!member.approved) {
-        cardHTML += `<button class="button is-success is-small accept-member-button" style="margin-top: 10px;">Accept</button>`;
-      }
-      cardHTML += `<button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>`;
+      cardHTML += `
+        <button class="button is-danger is-small delete-member-button" style="margin-top: 10px;">Delete</button>
+      `;
     }
 
-    cardHTML += `</div></div>`;
+    cardHTML += `
+        </div>
+      </div>
+    `;
+
     memberDiv.innerHTML = cardHTML;
     rosterContainer.appendChild(memberDiv);
-
-    if (currentUserIsAdmin && !member.approved) {
-      const acceptButton = memberDiv.querySelector(".accept-member-button");
-      acceptButton.addEventListener("click", async () => {
-        try {
-          await db.collection("Users").doc(member.uid).update({
-            approved: true,
-          });
-          member.approved = true;
-          renderFilteredRoster(searchTerm); // Refresh roster
-        } catch (error) {
-          console.error("Failed to approve user:", error);
-          alert("Error approving user.");
-        }
-      });
-    }
 
     if (currentUserIsAdmin) {
       const deleteButton = memberDiv.querySelector(".delete-member-button");
@@ -172,6 +154,7 @@ function renderFilteredRoster(searchTerm) {
             await db.collection("Users").doc(member.uid).delete();
             membersData = membersData.filter((m) => m.uid !== member.uid);
             memberDiv.remove();
+            console.log(`${member.first_name} ${member.last_name} deleted.`);
           } catch (error) {
             console.error("Error deleting user:", error);
             alert("Failed to delete user.");
@@ -331,7 +314,6 @@ function handleSubmit(event) {
           major: major,
           uid: user.uid,
           role: "member",
-          approved: false,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         })
         .then(() => {
