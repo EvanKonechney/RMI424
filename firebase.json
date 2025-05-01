@@ -1,14 +1,6 @@
 {
   "hosting": {
-<<<<<<< HEAD
     "public": "public",
-=======
-    "public": "/Users/gracedai/Documents/IS424/2/RMI424",
->>>>>>> abfffcb044455e0dc7776cce95417ab543bbbd2f
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   }
 }

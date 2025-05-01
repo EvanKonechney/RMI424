@@ -1,89 +1,650 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/11.6.1/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/11.6.1/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/11.6.1/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RMIS at UW-Madison</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
+    />
+    <style>
+      .navbar {
+        background-color: #7b1113;
+      }
+      .line {
+        background-color: #7b1113;
+        height: 1rem;
+      }
+      .hero {
+        background-color: #ddd;
+        padding: 50px;
+        text-align: center;
+      }
+      .socials img {
+        max-width: 100%;
+        height: auto;
+      }
+      .section {
+        padding: 40px 20px;
       }
     </style>
   </head>
   <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+    <nav class="navbar is-spaced">
+      <div class="navbar-brand">
+        <h1 class="navbar-item has-text-white is-size-2">RMIS at UW-Madison</h1>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <a href="#" id="home" class="navbar-item has-text-white">Home</a>
+          <a href="#" id="about" class="navbar-item has-text-white">About</a>
+          <a href="#" id="join" class="navbar-item has-text-white">Join</a>
+          <a href="#" id="events" class="navbar-item has-text-white"
+            >Attendance</a
+          >
+          <a href="#" id="roster" class="navbar-item has-text-white">Roster</a>
+          <a href="#" id="calendar" class="navbar-item has-text-white"
+            >Events</a
+          >
+          <a
+            href="#"
+            id="leadershipSignInButton"
+            class="navbar-item has-text-black has-background-grey-lighter"
+            onclick="openLeadershipModal()"
+          >
+            Leadership Sign In
+          </a>
+          <a
+            href="#"
+            id="leadershipSignOutButton"
+            class="navbar-item has-text-black has-background-grey-lighter is-hidden"
+            onclick="leadershipSignOut()"
+          >
+            Leadership Sign Out
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div class="modal" id="leadershipSigninModal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <label>Email:</label>
+          <input type="email" id="leadershipEmail" class="input" />
+          <label>Password:</label>
+          <input type="password" id="leadershipPassword" class="input" />
+          <button
+            class="button is-primary mt-4"
+            onclick="submitLeadershipSignIn()"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+      <button
+        class="modal-close is-large"
+        aria-label="close"
+        onclick="closeLeadershipModal()"
+      ></button>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+    <!-- Home Section -->
+    <section id="homepage" class="section has-text-centered">
+      <div class="is-relative">
+        <h2
+          class="title is-2 is-overlay has-text-centered is-flex is-justify-content-center is-align-items-center is-bold"
+          style="z-index: 2"
+        >
+          Welcome to Risk Management <br />Insurance Society
+        </h2>
+        <!-- Centered Image -->
+        <figure class="is-fullwidth is-center">
+          <img
+            src="https://brand.wisc.edu/content/uploads/2016/12/bascom-fall-1500x500.jpg"
+            alt="Risk Management Insurance Club Logo"
+            style="padding: 0px; width: 100%; height: auto; opacity: 50%"
+          />
+        </figure>
+      </div>
+    </section>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    <!-- About Section -->
+    <section id="aboutpage" class="section is-hidden">
+      <div
+        class="is-clipped"
+        style="
+          width: 100%;
+          height: 400px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <figure style="margin: 0">
+          <img
+            src="https://brand.wisc.edu/content/uploads/2016/12/bascom-fall-1500x500.jpg"
+            alt=""
+            style="opacity: 50%; max-width: 100%; max-height: 100%"
+          />
+        </figure>
+      </div>
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
+      <div class="container mt-4">
+        <h2 class="title is-4">About RMIS</h2>
+        <p>
+          Founded in 1948, the University of Wisconsin-Madison's Risk Management
+          & Insurance Society has worked for 70 years to provide opportunities
+          for informed, thoughtful and enthusiastic students to learn about risk
+          management and how it can be applied to help make the world a better
+          place. Since our inception, we as Business Badgers have always held
+          true to our university's most important and founding principle: our
+          actions should serve to positively affect the lives of those who call
+          our state, our country, and our world "home."
+        </p>
+        <br />
+        <div class="line"><br /></div>
+        <br />
+        ​The University of Wisconsin RMI program is ranked the #2 risk &
+        insurance program in the US. The RMI major encompasses a world-class
+        education that prepares students to identify, analyze, and manage risks
+        that are inherent in the operation of every profit and non-profit
+        institution. The RMI major lends itself to a career in multiple
+        industries, and is a popular double major for students in the Wisconsin
+        School of Business. Additionally, there is now a certificate in RMI that
+        allows students both inside and outside the school of business to
+        explore risk management and insurance. The classwork for both major and
+        certificate incorporates analytics, real-world applications, and
+        conceptual components to prepare students for a successful career. Risk
+        is involved in every decision and business endeavor, and having an
+        understanding of how to approach risk is critical to success in every
+        career path.
+      </div>
+    </section>
+
+    <!-- Join Section -->
+    <section
+      id="joinpage"
+      class="section is-hidden"
+      style="
+        background-image: url('https://res.cloudinary.com/simpleview/image/upload/v1655846723/clients/madison/wiscokid76_Instagram_2873_ig_17894131859324450_eef0d14a-526a-43b2-b98f-619ecd6bb9f1.jpg');
+        background-size: cover;
+        background-position: center;
+      "
+    >
+      <div class="container has-text-centered">
+        <div
+          class="box has-background-white p-5 mx-auto"
+          style="max-width: 600px"
+        >
+          <!-- Join Form -->
+          <form id="join-form" onsubmit="handleSubmit(event)">
+            <h1 class="title">Join RMIS</h1>
+            <p class="subtitle">Become a member today!</p>
+
+            <!-- First Name -->
+            <div class="field">
+              <label class="label">First Name</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  id="firstName"
+                  placeholder="e.g. Bucky"
+                  required
+                />
+              </div>
+            </div>
+            <!-- Last Name -->
+            <div class="field">
+              <label class="label">Last Name</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  id="lastName"
+                  placeholder="e.g. Badger"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="field">
+              <label class="label">Email</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="email"
+                  id="joinEmail"
+                  placeholder="e.g. bucky@wisc.edu"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Phone Number</label>
+              <div class="control is-flex" style="gap: 8px">
+                <!-- Country Code Input -->
+                <input
+                  class="input"
+                  type="text"
+                  id="countryCode"
+                  placeholder="+1"
+                  maxlength="5"
+                  pattern="^\+\d{1,4}$"
+                  style="flex: 1"
+                  required
+                />
+
+                <!-- Phone Number Input -->
+                <input
+                  class="input"
+                  type="tel"
+                  id="phoneNumber"
+                  placeholder="1234567890"
+                  maxlength="10"
+                  pattern="\d{10}"
+                  style="flex: 4"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="field">
+              <label class="label">Password</label>
+              <div class="control">
+                <input
+                  class="input"
+                  id="joinPassword"
+                  type="password"
+                  placeholder="Enter a secure password"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Year -->
+            <div class="field">
+              <label class="label">Year</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="yearSelect" required>
+                    <option value="">Select year</option>
+                    <option>Freshman</option>
+                    <option>Sophomore</option>
+                    <option>Junior</option>
+                    <option>Senior</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Major -->
+            <div class="field">
+              <label class="label">Major</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  id="majorInput"
+                  placeholder="e.g. Risk Management"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="field is-grouped is-justify-content-center mt-4">
+              <div class="control">
+                <button class="button is-primary is-medium" type="submit">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Thank You Message -->
+          <div id="thank-you" class="is-hidden has-text-centered mt-5">
+            <h2 class="title is-3 has-text-success">
+              Thanks for joining RMIS!
+            </h2>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="eventspage" class="section is-hidden">
+      <div class="container has-text-centered">
+        <h2 class="title is-4">Event Attendance Tracking</h2>
+
+        <!-- Sign In / Sign Out Buttons -->
+        <div id="sign-in-sign-out" class="mt-4">
+          <button
+            id="signinBtn"
+            class="button is-primary"
+            onclick="openSignInModal()"
+          >
+            Sign In
+          </button>
+
+          <button
+            id="signoutBtn"
+            class="button is-danger is-hidden"
+            onclick="signOut()"
+          >
+            Sign Out
+          </button>
+        </div>
+
+        <!-- Event Input Fields (Hidden until signed in) -->
+        <div id="event-inputs" class="is-hidden">
+          <div class="search-box mt-4">
+            <input
+              type="text"
+              id="eventCode"
+              placeholder="Enter Event Code"
+              class="input"
+              style="width: 50%"
+            />
+          </div>
+          <button
+            class="button is-link mt-4"
+            onclick="handleSubmitAttendance(event)"
+          >
+            Submit Attendance
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sign In Modal -->
+    <div id="signinModal" class="modal">
+      <div class="modal-background" onclick="closeModal()"></div>
+      <div class="modal-content">
+        <div class="box">
+          <h3 class="title is-4">Sign In</h3>
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+              <input
+                type="email"
+                id="email"
+                class="input"
+                placeholder="Enter your email"
+              />
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input
+                type="password"
+                id="password"
+                class="input"
+                placeholder="Enter your password"
+              />
+            </div>
+          </div>
+          <div class="field is-grouped is-grouped-right">
+            <div class="control">
+              <button class="button is-primary" onclick="submitSignIn()">
+                Submit
+              </button>
+            </div>
+            <div class="control">
+              <button class="button is-light" onclick="closeModal()">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roster Section -->
+    <section id="rosterpage" class="section is-hidden">
+      <div class="container">
+        <h2 class="title is-4 has-text-centered">Member Roster</h2>
+        <div class="field has-addons is-justify-content-center mb-5">
+          <div class="control">
+            <input
+              id="rosterSearch"
+              class="input"
+              type="text"
+              placeholder="Search by name..."
+            />
+          </div>
+          <div class="control">
+            <button id="rosterSearchBtn" class="button is-info">Search</button>
+          </div>
+          <div class="control">
+            <button id="rosterResetBtn" class="button is-light">Reset</button>
+          </div>
+        </div>
+        <div class="member-roster columns is-multiline"></div>
+      </div>
+    </section>
+    <!-- Calendar Page -->
+    <div id="calendarpage" class="is-hidden">
+      <section class="section">
+        <div class="container">
+          <h1 class="title">Event Calendar</h1>
+          <div id="event-list"></div>
+
+          <!-- Add Event Button (Visible only to Admin) -->
+          <div
+            class="has-text-centered mt-5"
+            id="addEventSection"
+            style="display: none"
+          >
+            <button class="button is-primary" onclick="openAddEventModal()">
+              Add New Event
+            </button>
+          </div>
+
+          <!-- Add Event Modal -->
+          <div class="modal" id="addEventModal">
+            <div class="modal-background" onclick="closeAddEventModal()"></div>
+            <div class="modal-content">
+              <div class="box">
+                <h3 class="title is-4">Add New Event</h3>
+
+                <!-- Event Name -->
+                <div class="field">
+                  <label class="label">Event Name</label>
+                  <input class="input" id="newEventName" type="text" required />
+                </div>
+
+                <!-- Date -->
+                <div class="field">
+                  <label class="label">Date</label>
+                  <input class="input" id="newEventDate" type="date" required />
+                </div>
+
+                <!-- Description -->
+                <div class="field">
+                  <label class="label">Description</label>
+                  <textarea
+                    class="textarea"
+                    id="newEventDescription"
+                    required
+                  ></textarea>
+                </div>
+
+                <!-- Event Code -->
+                <div class="field">
+                  <label class="label">Event Code</label>
+                  <input class="input" id="newEventCode" type="text" required />
+                </div>
+
+                <!-- Building -->
+                <div class="field">
+                  <label class="label">Building</label>
+                  <input
+                    class="input"
+                    id="newEventBuilding"
+                    type="text"
+                    placeholder="Enter building name"
+                  />
+                </div>
+
+                <!-- Room -->
+                <div class="field">
+                  <label class="label">Room</label>
+                  <input
+                    class="input"
+                    id="newEventRoom"
+                    type="text"
+                    placeholder="Enter room number"
+                  />
+                </div>
+
+                <!-- Buttons -->
+                <div class="buttons is-right">
+                  <button class="button is-success" onclick="submitNewEvent()">
+                    Submit
+                  </button>
+                  <button
+                    class="button is-light"
+                    onclick="closeAddEventModal()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contactpage" class="section is-hidden has-text-centered">
+      <div class="container">
+        <h2 class="title is-2">Contact Us!</h2>
+        <p>Follow us on all our socials!</p>
+        <!-- Social Media Icons -->
+        <div
+          class="is-flex is-justify-content-center is-align-items-center mt-3"
+        >
+          <!-- LinkedIn -->
+          <a
+            href="https://www.linkedin.com/company/rmis-uw"
+            target="_blank"
+            class="mx-3"
+          >
+            <span class="icon is-large">
+              <i class="fab fa-linkedin fa-2x"></i>
+            </span>
+          </a>
+          <!-- Instagram -->
+          <a
+            href="https://www.instagram.com/rmisuw?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank"
+            class="mx-3"
+          >
+            <span class="icon is-large">
+              <i class="fab fa-instagram fa-2x"></i>
+            </span>
+          </a>
+          <!-- Email -->
+          <a href="mailto:your@email.com" class="mx-3">
+            <span class="icon is-large">
+              <i class="fas fa-envelope fa-2x"></i>
+            </span>
+          </a>
+        </div>
+
+        <!-- Social Media Image -->
+        <div class="socials mt-5">
+          <figure class="image is-inline-block">
+            <img
+              src="images/Socials.png"
+              alt="Social Media Links"
+              width="300"
+            />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer has-background-light">
+      <div class="container">
+        <h2 class="title is-2 has-text-centered">Contact Us!</h2>
+        <p class="has-text-centered">Follow us on all our socials!</p>
+        <!-- Social Media Icons -->
+        <div
+          class="is-flex is-justify-content-center is-align-items-center mt-3"
+        >
+          <!-- LinkedIn -->
+          <a
+            href="https://www.linkedin.com/company/rmis-uw"
+            target="_blank"
+            class="mx-3"
+          >
+            <span class="icon is-large">
+              <i class="fab fa-linkedin fa-2x"></i>
+            </span>
+          </a>
+          <!-- Instagram -->
+          <a
+            href="https://www.instagram.com/rmisuw?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank"
+            class="mx-3"
+          >
+            <span class="icon is-large">
+              <i class="fab fa-instagram fa-2x"></i>
+            </span>
+          </a>
+          <!-- Email -->
+          <a href="mailto:your@email.com" class="mx-3">
+            <span class="icon is-large">
+              <i class="fas fa-envelope fa-2x"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="content has-text-centered">
+        <p>&copy; RMIS at UW-Madison. All rights reserved!</p>
+      </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-storage.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
+
+    <script src="app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <!-- <script>
+      // TODO
+      // Copy **only** your firebaseConfig from Google Firebae and add it below
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCwbYc0yoW17C5fhIFwJpMH9yOK3hi6lA8",
+        authDomain: "infosys424project.firebaseapp.com",
+        projectId: "infosys424project",
+        storageBucket: "infosys424project.firebasestorage.app",
+        messagingSenderId: "410062568113",
+        appId: "1:410062568113:web:08f3f71987dd3ab6250090",
+        measurementId: "G-RS7X851NXV",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      // define authentication variable
+      let auth = firebase.auth();
+      let db = firebase.firestore();
+
+      // define a storage reference
+      let ref = firebase.storage().ref();
+    </script> -->
   </body>
 </html>
