@@ -116,7 +116,6 @@ function renderFilteredRoster(searchTerm) {
       .includes(searchTerm.toLowerCase())
   );
 
-  // Skip unapproved users unless admin
   const visibleMembers = filtered.filter(
     (member) => currentUserIsAdmin || member.approved === true
   );
@@ -125,7 +124,6 @@ function renderFilteredRoster(searchTerm) {
     const memberDiv = document.createElement("div");
     memberDiv.classList.add("column", "is-one-third");
 
-    // Count events attended (default to 0 if not present)
     const eventCount = Array.isArray(member.events_attended)
       ? member.events_attended.length
       : 0;
@@ -138,12 +136,10 @@ function renderFilteredRoster(searchTerm) {
           <p><strong>Major:</strong> ${member.major}</p>
     `;
 
-    // Show events attended if leadership
     if (currentUserIsAdmin) {
       cardHTML += `<p><strong>Events Attended:</strong> ${eventCount}</p>`;
     }
 
-    // Show admin controls
     if (currentUserIsAdmin) {
       if (!member.approved) {
         cardHTML += `<button class="button is-success is-small accept-member-button" style="margin-top: 10px;">Accept</button>`;
@@ -155,7 +151,6 @@ function renderFilteredRoster(searchTerm) {
     memberDiv.innerHTML = cardHTML;
     rosterContainer.appendChild(memberDiv);
 
-    // Accept member handler
     if (currentUserIsAdmin && !member.approved) {
       const acceptButton = memberDiv.querySelector(".accept-member-button");
       acceptButton.addEventListener("click", async () => {
@@ -172,7 +167,6 @@ function renderFilteredRoster(searchTerm) {
       });
     }
 
-    // Delete member handler
     if (currentUserIsAdmin) {
       const deleteButton = memberDiv.querySelector(".delete-member-button");
       deleteButton.addEventListener("click", async () => {
@@ -367,7 +361,7 @@ function handleSubmit(event) {
 
 async function loadCalendarEvents() {
   const eventList = document.getElementById("event-list");
-  eventList.innerHTML = ""; // Clear previous content
+  eventList.innerHTML = "";
 
   try {
     const snapshot = await db.collection("Events").get();
@@ -378,26 +372,42 @@ async function loadCalendarEvents() {
       events.push({ id: doc.id, ...data });
     });
 
-    // Sort by date descending
+    // Sort events by date (most recent first)
     events.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     events.forEach((event) => {
       const eventDiv = document.createElement("div");
       eventDiv.classList.add("box");
 
+      let attendeeNamesHTML = "";
+      if (
+        currentUserIsAdmin &&
+        Array.isArray(event.attendees) &&
+        event.attendees.length > 0
+      ) {
+        attendeeNamesHTML = `
+        <br>
+          <p><strong>Attendees (${event.attendees.length}):</strong></p>
+          <ul style="margin-top: 5px;">
+            ${event.attendees.map((name) => `${name}`).join(", ")}
+          </ul>
+        `;
+      }
+
       eventDiv.innerHTML = `
         <h2 class="title is-4">${event.event_name}</h2>
         <p><strong>Date:</strong> ${event.date}</p>
-        <p><strong>Location:</strong> ${event.location.building} Room ${
-        event.location.room
-      }</p>
+        <p><strong>Location:</strong> ${
+          event.location?.building || "N/A"
+        } Room ${event.location?.room || "N/A"}</p>
         <p>${event.description || ""}</p>
-  ${
-    currentUserIsAdmin
-      ? `<button class="button is-danger is-small mt-3" onclick="deleteEvent('${event.id}')">Delete</button>`
-      : ""
-  }
-`;
+        ${attendeeNamesHTML}
+        ${
+          currentUserIsAdmin
+            ? `<button class="button is-danger is-small mt-3" onclick="deleteEvent('${event.id}')">Delete</button>`
+            : ""
+        }
+      `;
 
       eventList.appendChild(eventDiv);
     });
@@ -476,14 +486,13 @@ function submitLeadershipSignIn() {
         const doc = await db.collection("Users").doc(user.uid).get();
 
         if (doc.exists && doc.data().role === "admin") {
-          currentUserIsAdmin = true; // ✅ Make sure this global flag is updated
+          currentUserIsAdmin = true;
           localStorage.setItem("leadershipSignedIn", "true");
 
           closeLeadershipModal();
           leadershipSignInButton.classList.add("is-hidden");
           leadershipSignOutButton.classList.remove("is-hidden");
 
-          // ✅ Fix: Display admin-only section
           const addEventSection = document.getElementById("addEventSection");
           if (addEventSection) {
             addEventSection.style.display = "block";
@@ -491,7 +500,7 @@ function submitLeadershipSignIn() {
 
           alert("Leadership sign-in successful!");
         } else {
-          await firebase.auth().signOut(); // Log them out if not admin
+          await firebase.auth().signOut();
           alert("You are not authorized.");
         }
       } catch (err) {
